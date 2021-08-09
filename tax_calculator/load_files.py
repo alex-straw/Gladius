@@ -1,4 +1,7 @@
+# -*- coding: utf-8 -*-
 """
-Load files from a local folder
-Count number of files in directory to read
+Created on Sunday August 09 12:34:00 2021
+Author: Alex Straw
+Description:
+    Load files from a local folder
 """
