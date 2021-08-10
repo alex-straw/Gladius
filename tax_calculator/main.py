@@ -41,7 +41,7 @@ def main(file_paths):
     df = evaluate_in_fiat.get_prices(df,file_paths)
 
     # Save merged portfolio to local directory
-    df.to_csv(file_path['results'] + "\portfolio.csv")
+    df.to_csv(file_paths['results'] + "\portfolio.csv")
 
 
 if __name__ == '__main__':
