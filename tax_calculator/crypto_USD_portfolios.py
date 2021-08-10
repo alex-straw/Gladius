@@ -32,8 +32,8 @@ def tidy_portfolio(df,crypto,file_paths):
     This is done to prep for tax calculations later - as they are resolved in FIAT
     """
 
-    columns_lhs = ['date', 'unix', 'side', 'c1 name', 'c1 size', 'c1 unit price USD']
-    columns_rhs = ['date', 'unix', 'side', 'c2 name', 'c2 size', 'c2 unit price USD']
+    columns_lhs = ['date', 'unix', 'c1 name', 'c1 size', 'c1 unit price USD']
+    columns_rhs = ['date', 'unix', 'c2 name', 'c2 size', 'c2 unit price USD']
 
     #   This is necessary as some coins can act similarly to FIAT - as a medium of exchange (e.g BTC/ETH)
     #   They are present in both columns: c1, and c2.
