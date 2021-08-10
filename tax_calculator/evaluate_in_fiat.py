@@ -22,7 +22,7 @@ def get_external_prices(df,data_path):
     df['c2 unit price USD'] = token_prices
 
 
-def get_c2_dataframes(df):
+def dict_dataframes(df,type):
     """
     C2s - or currency 2s, are the resolving currencies for all transactions on Coinbase
     Typically these are [BTC,ETH,GBP,EUR,USD,USDC,USDT]...
@@ -31,18 +31,18 @@ def get_c2_dataframes(df):
     These are populated and priced separately.
     This is done to minimise required memory by having fewer large data frames open
     """
-    c2_list = df["c2 name"].unique()
-    c2_portfolios = {}
+    c_list = df[type].unique()
+    c_portfolios = {}
 
-    for currency in c2_list:
-        c2_portfolios[currency] = pd.DataFrame()
-        c2_portfolios[currency] = c2_portfolios[currency].append([df[df['c2 name'] == currency]])
+    for currency in c_list:
+        c_portfolios[currency] = pd.DataFrame()
+        c_portfolios[currency] = c_portfolios[currency].append([df[df[type] == currency]])
 
-    return c2_list, c2_portfolios
+    return c_list, c_portfolios
 
 
 def get_prices(df,file_paths):
-    c2_list, c2_portfolios = get_c2_dataframes(df)
+    c2_list, c2_portfolios = dict_dataframes(df, "c2 name")
 
     exchange_rates = {'USDC': 1,
                       'GBP': 1.38,
