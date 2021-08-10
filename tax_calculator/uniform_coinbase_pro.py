@@ -44,7 +44,7 @@ def add_unix_column(df):
     exact_time_pattern = "T(.*)."
     day_pattern = "(.*)T"
 
-    for time in df['created at']:
+    for time in df['date']:
         initial_time = re.search(exact_time_pattern, time).group(1)  # Select data after letter 'T'
         time_split = np.array(initial_time.split(':', -1))
         time_split_float = time_split.astype(float)
@@ -76,14 +76,14 @@ def organise_data(df):
 
     # FORMAT: | date | unix | side | c1 name | c1 size | c2 name | c2 size | c2 size USD |
 
-    df = add_unix_column(df)
-
     df = df.rename(columns={'created at': 'date',
                             'size unit': 'c1 name',
                             'size': 'c1 size',
                             'price/fee/total unit': 'c2 name',
                             'total': 'c2 size'
                             })
+
+    df = add_unix_column(df)
 
     df['c1 size'] = df['c1 size'] * -1 * np.sign(df["c2 size"])  # Minus if SELL, plus if BUY
 
