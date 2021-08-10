@@ -10,15 +10,18 @@ import uniform_coinbase
 import uniform_coinbase_pro
 import evaluate_in_fiat
 
+file_paths = {'coinbase': r"C:\Users\alexa\Desktop\user_spreadsheets\cb.csv",
+              'coinbase_pro': r"C:\Users\alexa\Desktop\user_spreadsheets\cb_pro.csv",
+              'BTC_data': r"C:\Users\alexa\Desktop\price_data\Binance_BTCUSDT_minute.csv",
+              'ETH_data': r"C:\Users\alexa\Desktop\price_data\Binance_BTCUSDT_minute.csv",
+              'results': r"C:\Users\alexa\Desktop\output_testing"
+              }
 
-def main():
-    coinbase_path = r"C:\Users\alexa\Desktop\user_spreadsheets\cb.csv"  # r indicates raw string
-    coinbase_pro_path = r"C:\Users\alexa\Desktop\user_spreadsheets\cb_pro.csv"
 
-    results_path = r"C:\Users\alexa\Desktop\output_testing"  # Local output path for spreadsheets
+def main(file_paths):
 
     # Load trading data from excel spreadsheets
-    coinbase_df, coinbase_pro_df = load_files.load_trading_data(coinbase_path, coinbase_pro_path)
+    coinbase_df, coinbase_pro_df = load_files.load_trading_data(file_paths['coinbase'], file_paths['coinbase_pro'])
 
     # Standardise portfolios prior to data merge
     # FORMAT: | dd/mm/yyyy | unix | side | c1 name | c1 size | c2 name | c2 size | c2 size USD |
@@ -26,8 +29,8 @@ def main():
     coinbase_pro_df = uniform_coinbase_pro.organise_data(coinbase_pro_df)
 
     # Save updated portfolios to local directory
-    coinbase_df.to_csv(results_path + "\cb.csv")
-    coinbase_pro_df.to_csv(results_path + "\cb_pro.csv")
+    coinbase_df.to_csv(file_paths['results'] + "\cb.csv")
+    coinbase_pro_df.to_csv(file_paths['results'] + "\cb_pro.csv")
 
     # Merge portfolios and sort chronologically by unix time
     df = pd.concat([coinbase_df, coinbase_pro_df])
@@ -35,11 +38,11 @@ def main():
     df = df.reset_index(drop=True)
 
     # Get total value of transaction and token prices in USD
-    df = evaluate_in_fiat.get_prices(df)
+    df = evaluate_in_fiat.get_prices(df,file_paths)
 
     # Save merged portfolio to local directory
-    df.to_csv(results_path + "\portfolio.csv")
+    df.to_csv(file_path['results'] + "\portfolio.csv")
 
 
 if __name__ == '__main__':
-    main()
+    main(file_paths)

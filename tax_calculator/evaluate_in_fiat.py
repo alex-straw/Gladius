@@ -38,11 +38,10 @@ def get_c2_dataframes(df):
         c2_portfolio[currency] = pd.DataFrame()
         c2_portfolio[currency] = c2_portfolio[currency].append([df[df['c2 name'] == currency]])
 
-
     return c2_list, c2_portfolio
 
 
-def get_prices(df):
+def get_prices(df,file_paths):
     c2_list, c2_portfolio = get_c2_dataframes(df)
 
     exchange_rates = {'USDC': 1,
@@ -51,10 +50,6 @@ def get_prices(df):
                       'USD': 1,
                       'DAI': 1
                       }
-
-    external_data = {'BTC': r"C:\Users\alexa\Desktop\price_data\Binance_BTCUSDT_minute.csv",
-                     'ETH': r"C:\Users\alexa\Desktop\price_data\Binance_ETHUSDT_minute.csv"
-                     }
 
     for c2 in c2_portfolio:
         print(c2)
