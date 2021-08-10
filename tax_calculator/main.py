@@ -7,10 +7,11 @@ import re
 from datetime import datetime
 import time
 import load_files
-import uniform_coinbase
 import uniform_coinbase_pro
+import uniform_coinbase
 import evaluate_in_fiat
 import crypto_USD_portfolios
+import calculate_gains
 
 
 file_paths = {'coinbase': r"C:\Users\alexa\Desktop\user_spreadsheets\cb.csv",
@@ -32,9 +33,7 @@ def main(file_paths):
     coinbase_df = uniform_coinbase.organise_data(coinbase_df)
     coinbase_pro_df = uniform_coinbase_pro.organise_data(coinbase_pro_df)
 
-    portfolio_array = []
-    portfolio_array.append(coinbase_pro_df)
-    portfolio_array.append(coinbase_df)
+    portfolio_array = [coinbase_pro_df, coinbase_df]
 
     # Merge portfolios
     df = pd.concat(portfolio_array)
@@ -46,6 +45,9 @@ def main(file_paths):
 
     # Separate into many data frames - one for each unique currency traded
     crypto_dict = crypto_USD_portfolios.make_portfolios(df,file_paths)
+
+    # Final calculations - cost basis - capital gains - capital losses
+    crypto_dict = calculate_gains.calculate(crypto_dict,file_paths)
 
     # Save merged portfolio to local directory
     crypto_dict['BTC'].to_csv(file_paths['results'] + "\portfolio.csv")
