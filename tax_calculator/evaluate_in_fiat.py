@@ -61,5 +61,7 @@ def get_prices(df,file_paths):
 
     df = pd.concat(c2_portfolios)
     df['c2 size USD'] = df['c2 unit price USD'] * df['c2 size']
+    df['c1 size USD'] = df['c2 size USD'] * - 1
+    df['c1 unit price USD'] = abs(df['c2 size USD'] / df['c1 size'])
 
     return df
