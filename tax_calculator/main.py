@@ -32,16 +32,20 @@ def main(file_paths):
     coinbase_df = uniform_coinbase.organise_data(coinbase_df)
     coinbase_pro_df = uniform_coinbase_pro.organise_data(coinbase_pro_df)
 
+    portfolio_array = []
+    portfolio_array.append(coinbase_pro_df)
+    portfolio_array.append(coinbase_df)
+
     # Merge portfolios
-    df = pd.concat([coinbase_df, coinbase_pro_df])
+    df = pd.concat(portfolio_array)
 
     # Get total value of transaction and token prices in USD and sort chronologically by unix time
     df = evaluate_in_fiat.get_prices(df, file_paths)
-    df = df.sort_values(by=["unix"])
+    df = df.sort_values(by=["date"])
     df = df.reset_index(drop=True)
 
     # Separate into many data frames - one for each unique currency traded
-    crypto_dict = crypto_USD_portfolios.make_portfolios(df)
+    crypto_dict = crypto_USD_portfolios.make_portfolios(df,file_paths)
 
     # Save merged portfolio to local directory
     crypto_dict['BTC'].to_csv(file_paths['results'] + "\portfolio.csv")

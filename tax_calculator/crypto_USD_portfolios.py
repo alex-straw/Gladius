@@ -23,7 +23,7 @@ def get_crypto_dataframes(df):
     return crypto_portfolios
 
 
-def tidy_portfolio(df,crypto):
+def tidy_portfolio(df,crypto,file_paths):
     """
     This function builds a new data frame that only contains:
         -itself
@@ -32,8 +32,8 @@ def tidy_portfolio(df,crypto):
     This is done to prep for tax calculations later - as they are resolved in FIAT
     """
 
-    columns_lhs = ['unix', 'side', 'c1 name', 'c1 size', 'c1 unit price USD']
-    columns_rhs = ['unix', 'side', 'c2 name', 'c2 size', 'c2 unit price USD']
+    columns_lhs = ['date', 'unix', 'side', 'c1 name', 'c1 size', 'c1 unit price USD']
+    columns_rhs = ['date', 'unix', 'side', 'c2 name', 'c2 size', 'c2 unit price USD']
 
     #   This is necessary as some coins can act similarly to FIAT - as a medium of exchange (e.g BTC/ETH)
     #   They are present in both columns: c1, and c2.
@@ -57,7 +57,7 @@ def tidy_portfolio(df,crypto):
 
     df = pd.concat([left_side_df, right_side_df])
 
-    df = df.sort_values(by="unix")
+    df = df.sort_values(by="date")
     df = df.reset_index(drop=True)
 
     df['current_holdings'] = df['size'].cumsum()
@@ -65,10 +65,11 @@ def tidy_portfolio(df,crypto):
     return df
 
 
-def make_portfolios(df):
+def make_portfolios(df,file_paths):
     crypto_portfolios = get_crypto_dataframes(df)
+    crypto_portfolios['BTC'].to_csv(file_paths['results'] + "\Bitcoin.csv")
 
     for name in crypto_portfolios:
-        crypto_portfolios[name] = tidy_portfolio(crypto_portfolios[name], name)
+        crypto_portfolios[name] = tidy_portfolio(crypto_portfolios[name], name, file_paths)
 
     return crypto_portfolios
