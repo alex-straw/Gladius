@@ -8,7 +8,7 @@ from datetime import datetime
 import load_files
 import uniform_coinbase
 import uniform_coinbase_pro
-import fiat_transactions
+import evaluate_in_fiat
 
 
 def main():
@@ -35,7 +35,7 @@ def main():
     df = df.reset_index(drop=True)
 
     # Get total value of transaction and token prices in USD
-    df = fiat_transactions.get_prices(df)
+    df = evaluate_in_fiat.get_prices(df)
 
     # Save merged portfolio to local directory
     df.to_csv(results_path + "\portfolio.csv")
