@@ -12,7 +12,7 @@ Description:
 
 
 def load_trading_data(coinbase_path,coinbase_pro_path):
-    coinbase_df = pd.read_csv(coinbase_path)
+    coinbase_df = pd.read_csv(coinbase_path,skiprows=7)
     coinbase_pro_df = pd.read_csv(coinbase_pro_path)
 
     return coinbase_df,coinbase_pro_df
