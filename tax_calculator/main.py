@@ -12,8 +12,8 @@ import evaluate_in_fiat
 
 file_paths = {'coinbase': r"C:\Users\alexa\Desktop\user_spreadsheets\cb.csv",
               'coinbase_pro': r"C:\Users\alexa\Desktop\user_spreadsheets\cb_pro.csv",
-              'BTC_data': r"C:\Users\alexa\Desktop\price_data\Binance_BTCUSDT_minute.csv",
-              'ETH_data': r"C:\Users\alexa\Desktop\price_data\Binance_BTCUSDT_minute.csv",
+              'BTC': r"C:\Users\alexa\Desktop\price_data\Binance_BTCUSDT_minute.csv",
+              'ETH': r"C:\Users\alexa\Desktop\price_data\Binance_BTCUSDT_minute.csv",
               'results': r"C:\Users\alexa\Desktop\output_testing"
               }
 

@@ -16,10 +16,10 @@ def get_external_prices(df,data_path):
     price_data = pd.read_csv(data_path, skiprows=1)
 
     for time in df['unix']:
-        row = df[df['unix'] == time]
+        row = price_data[price_data['unix'] == time]
         price = row.iloc[0]['open']
         token_prices.append(price)
-    df['c2 unit price'] = token_prices
+    df['c2 unit price USD'] = token_prices
 
 
 def get_c2_dataframes(df):
@@ -32,17 +32,17 @@ def get_c2_dataframes(df):
     This is done to minimise required memory by having fewer large data frames open
     """
     c2_list = df["c2 name"].unique()
-    c2_portfolio = {}
+    c2_portfolios = {}
 
     for currency in c2_list:
-        c2_portfolio[currency] = pd.DataFrame()
-        c2_portfolio[currency] = c2_portfolio[currency].append([df[df['c2 name'] == currency]])
+        c2_portfolios[currency] = pd.DataFrame()
+        c2_portfolios[currency] = c2_portfolios[currency].append([df[df['c2 name'] == currency]])
 
-    return c2_list, c2_portfolio
+    return c2_list, c2_portfolios
 
 
 def get_prices(df,file_paths):
-    c2_list, c2_portfolio = get_c2_dataframes(df)
+    c2_list, c2_portfolios = get_c2_dataframes(df)
 
     exchange_rates = {'USDC': 1,
                       'GBP': 1.38,
@@ -51,7 +51,15 @@ def get_prices(df,file_paths):
                       'DAI': 1
                       }
 
-    for c2 in c2_portfolio:
-        print(c2)
+    for c2 in c2_portfolios:
+        if c2 == 'BTC' or c2 == 'ETH':
+            get_external_prices(c2_portfolios[c2], file_paths[c2])
+        else:
+            specific_rate = exchange_rates[c2]
+            token_prices = [specific_rate] * len(c2_portfolios[c2])
+            c2_portfolios[c2]['c2 unit price USD'] = token_prices
+
+    df = pd.concat(c2_portfolios)
+    df['c2 size USD'] = df['c2 unit price USD'] * df['c2 size']
 
     return df
