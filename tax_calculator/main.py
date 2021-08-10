@@ -8,6 +8,7 @@ from datetime import datetime
 import load_files
 import uniform_coinbase
 import uniform_coinbase_pro
+import fiat_transactions
 
 
 def main():
@@ -28,13 +29,17 @@ def main():
     coinbase_df.to_csv(results_path + "\cb.csv")
     coinbase_pro_df.to_csv(results_path + "\cb_pro.csv")
 
-    # Merge portfolios sort chronologically
-    df = pd.concat([coinbase_df,coinbase_pro_df])
+    # Merge portfolios and sort chronologically by unix time
+    df = pd.concat([coinbase_df, coinbase_pro_df])
     df = df.sort_values(by=["unix"])
     df = df.reset_index(drop=True)
 
+    # Get total value of transaction and token prices in USD
+    df = fiat_transactions.get_prices(df)
+
     # Save merged portfolio to local directory
     df.to_csv(results_path + "\portfolio.csv")
+
 
 if __name__ == '__main__':
     main()
