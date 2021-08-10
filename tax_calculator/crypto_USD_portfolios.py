@@ -65,7 +65,7 @@ def tidy_portfolio(df,crypto):
     return df
 
 
-def make_fiat_crypto_portolios(df):
+def make_portfolios(df):
     crypto_portfolios = get_crypto_dataframes(df)
 
     for name in crypto_portfolios:
