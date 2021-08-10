@@ -35,18 +35,17 @@ def main(file_paths):
     df = pd.concat([coinbase_df, coinbase_pro_df])
 
     # Get total value of transaction and token prices in USD and sort chronologically by unix time
-    df = evaluate_in_fiat.get_prices(df,file_paths)
+    df = evaluate_in_fiat.get_prices(df, file_paths)
     df = df.sort_values(by=["unix"])
     df = df.reset_index(drop=True)
 
     # Separate into many data frames - one for each unique currency traded
-    crypto_dict = crypto_portfolios.make(df)
+    crypto_dict = crypto_portfolios.make_fiat_crypto_portolios(df)
 
     # Save merged portfolio to local directory
-    df.to_csv(file_paths['results'] + "\portfolio.csv")
+    crypto_dict['BTC'].to_csv(file_paths['results'] + "\portfolio.csv")
 
     print(time.time() - t)
-
 
 
 if __name__ == '__main__':
