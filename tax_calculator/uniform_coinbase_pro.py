@@ -7,3 +7,12 @@ Description:
     
     | dd/mm/yyyy | unix | side | c1 name | c1 size | c2 name | c2 size | c2 size USD |
 """
+
+import pandas as pd
+import numpy as np
+import os
+import re
+
+
+def organise_data(df):
+    return df
