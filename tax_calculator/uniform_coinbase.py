@@ -117,9 +117,10 @@ def organise_data(df):
     # Get rid of all transactions that are send - receive - etc (keeps Coinbase Earn).
     df = df[df['side'] != 'IGNORE']
 
-    # Creates equivalent price/fee/total unit depending on row names --> same as CBpro document - could be EUR or USD
+    # Creates equivalent c2 column depending on subtotal currency - could be EUR,USD,GBP...
     df['c2 name'] = [home_currency] * len(df)
 
+    # Checking for empty total column values --> caused by send/receive/earn etc
     df['bool_series'] = pd.isnull(df["GBP Total (inclusive of fees)"])
     df.loc[df['bool_series'] == True, 'GBP Total (inclusive of fees)'] = df['c1 unit price'] * df['c1 size']
 
