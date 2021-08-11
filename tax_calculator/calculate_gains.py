@@ -20,6 +20,9 @@ def prepare_spreadsheets(df):
                            
     # Important to note that on this spreadsheet the 'previous_holdings' column may refer to sell orders that are not present.
     # This is key as it allows for correct cost basis weightings.
+                           
+    # Recursive process that uses previous cost basis to calculate following cost basis.
+    # current_cost_basis = ((Token price USD * abs(size)) + (previous_holdings*previous_cost_basis))/current_holdings 
     
     # Only sell orders will directly lead to capital gains / losses
     sell_df = sell_df.append(np.sign([df[df['size']) == -1]])
