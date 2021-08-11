@@ -37,12 +37,7 @@ def prepare_spreadsheets(df):
     # Step 3: cur_trans_wt - current transaction weighting
     # Step 3: prev_trans_wt - previous transaction weighting
     df['cur_trans_wt'] = df['Token price USD'] * df['cur_cost_basis_size']
-    
-    df['
-    
-  
-                          
-                           
+             
     # Recursive process that uses previous cost basis to calculate following cost basis.
     # current_cost_basis = ((Token price USD * (size above 0)) + (previous_holdings*previous_cost_basis))/current_holdings 
 
