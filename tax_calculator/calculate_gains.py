@@ -11,8 +11,20 @@ def prepare_spreadsheets(df):
     
      # (2) df: | unix | date | token | Token price USD | size | current_holdings | previous_holdings |
         
-    # Cost basis
+    """ REQUIRES TESTING: START """
     
+    # Test these lines
+    
+    # Only buy orders will directly affect the cost basis
+    buy_df = buy_df.append(np.sign([df[df['size']) == 1]])
+                           
+    # Important to note that on this spreadsheet the 'previous_holdings' column may refer to sell orders that are not present.
+    # This is key as it allows for correct cost basis weightings.
+    
+    # Only sell orders will directly lead to capital gains / losses
+    sell_df = sell_df.append(np.sign([df[df['size']) == -1]])
+                             
+   """ REQUIRES TESTING: END """
     
     return df
 
