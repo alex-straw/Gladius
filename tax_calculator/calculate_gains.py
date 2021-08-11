@@ -16,7 +16,14 @@ def prepare_spreadsheets(df):
     # Test these lines
     
     # Only buy orders will directly affect the cost basis
-    buy_df = buy_df.append(np.sign([df[df['size']) == 1]])
+    # Only sell orders will directly lead to capital gains / losses
+    
+    # Strategy for optimising this calculation:
+   
+    # Step 1: Create an identical column
+    df['cost_basis_size'] = df['size']
+    # Step 2: If the sign of a size column is negative (SELL), set the corresponding value in 'cost_basis_size' to 0 
+    df.loc[np.sign(df['size']) == -1, 'cost_basis_size'] = 0
                            
     # Important to note that on this spreadsheet the 'previous_holdings' column may refer to sell orders that are not present.
     # This is key as it allows for correct cost basis weightings.
@@ -24,7 +31,9 @@ def prepare_spreadsheets(df):
     # Recursive process that uses previous cost basis to calculate following cost basis.
     # current_cost_basis = ((Token price USD * abs(size)) + (previous_holdings*previous_cost_basis))/current_holdings 
     
-    # Only sell orders will directly lead to capital gains / losses
+                           
+                           
+    
     sell_df = sell_df.append(np.sign([df[df['size']) == -1]])
                              
    """ REQUIRES TESTING: END """
