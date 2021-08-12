@@ -35,9 +35,14 @@ def prepare_spreadsheets(df):
                             
     # | x | unix | date | token | Token price USD | size | current_holdings | previous_holdings | prev_cost_basis | cur_cost_basis |
     # | 2 | unix | date | LINK  |       10        |  +50 |        50        |         0         |        0        |        0       |
-    # | 4 | unix | date | LINK  |       20        |  +25 |        50        |         25        |        0        |        0       |                       
-                                         
+    # | 4 | unix | date | LINK  |       20        |  +25 |        50        |         25        |        0        |        0       |
+                
                             
+    # | x | unix | date | token | Token price USD | size | current_holdings | previous_holdings | prev_cost_basis |      cur_cost_basis        |  
+    # | 2 | unix | date | LINK  |       10        |  +50 |        50        |         0         |        0        |   (50*10)+(0*0)/50 = 10    |
+    # | 4 | unix | date | LINK  |       20        |  +25 |        50        |         25        |        10       |   (25*20)+(25*10)/50 = 15  |
+                                         
+    
     sell_df = sell_df.append([np.sign(df[df['size']) == -1]])
                               
     # | x | unix | date | token | Token price USD | size | current_holdings | previous_holdings | prev_cost_basis | cur_cost_basis |
