@@ -13,30 +13,34 @@ def prepare_spreadsheets(df):
     
     df['previous holdings'] = df['current_holdings'].shift()
     df.at[0,'previous holdings'] = 0
+
     # | x | unix | date | token | Token price USD | size | current_holdings | previous_holdings |
     # | 2 | unix | date | LINK  |       10        |  +50 |        50        |         0         |
     # | 3 | unix | date | LINK  |       25        |  -25 |        25        |         50        |
     # | 4 | unix | date | LINK  |       20        |  +25 |        50        |         25        |
     
-    df['cost_basis'] = 0    # Set up empty cost basis column
-    # | x | unix | date | token | Token price USD | size | current_holdings | previous_holdings | cost_basis |
-    # | 2 | unix | date | LINK  |       10        |  +50 |        50        |         0         |      0     |
-    # | 3 | unix | date | LINK  |       25        |  -25 |        25        |         50        |      0     |
-    # | 4 | unix | date | LINK  |       20        |  +25 |        50        |         25        |      0     |
+    # Create a column named 'cost_basis' and fill it with NaN
+    df['cost_basis'] = np.nan
+    # | x | unix | date | token | Token price USD | size | current_holdings | previous_holdings |  cost_basis  |
+    # | 2 | unix | date | LINK  |       10        |  +50 |        50        |         0         |      NaN     |
+    # | 3 | unix | date | LINK  |       25        |  -25 |        25        |         50        |      NaN     |
+    # | 4 | unix | date | LINK  |       20        |  +25 |        50        |         25        |      NaN     |
     
     buy_df = buy_df.append([np.sign(df[df['size']) == 1]])  
     # | x | unix | date | token | Token price USD | size | current_holdings | previous_holdings | cost_basis |
     # | 2 | unix | date | LINK  |       10        |  +50 |        50        |         0         |      0     |
-    # | 4 | unix | date | LINK  |       20        |  +25 |        50        |         25        |      0     |
-                            
+    # | 4 | unix | date | LINK  |       20        |  +25 |        50        |         25        |      0     |                       
     
     # Vectorised prior to loop to minimise processing done within for loop                 
     buy_df['price_x_size'] = buy_df['Token price USD'] * buy_df['size']
+    
+    # Set up the first cost_basis --> equal to the very first purchase price
+    buy_df.at[0,'cost_basis'] = buy_df['Token price USD'].values[0]                     
 
     # Time this section of code --> no straightforward vectorisation obvious
     for i in range(1, len(buy_df)):
         # cost basis = (Token price USD * trade size + previous cost basis USD * previous holdings) / current_holdings                   
-        buy_df.loc[i, 'cost_basis'] = (df.loc[i, 'price_x_size'] + df.loc[i, 'previous_holdings'] * df.loc[i-1, 'cost_basis'])/df.loc[i, 'current_holdings']
+        buy_df.loc[i, 'cost_basis'] = (buy_df.loc[i, 'price_x_size'] + buy_df.loc[i, 'previous_holdings'] * buy_df.loc[i-1, 'cost_basis'])/buy_df.loc[i, 'current_holdings']
 
 
     sell_df = sell_df.append([np.sign(df[df['size']) == -1]])
