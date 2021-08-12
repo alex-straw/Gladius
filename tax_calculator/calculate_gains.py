@@ -22,6 +22,9 @@ def prepare_spreadsheets(df):
     # | unix | date | LINK  |       10        |  +50 |        50        |         0         |
     # | unix | date | LINK  |       25        |  -25 |        50        |         75        |
     # | unix | date | LINK  |       20        |  +25 |        75        |         50        |
+    
+    buy_df = buy_df.append([np.sign(df[df['size']) == 1]])
+    sell_df = sell_df.append([np.sign(df[df['size']) == -1]])
                              
    """ REQUIRES TESTING: END """
     
