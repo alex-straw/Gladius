@@ -42,7 +42,13 @@ def prepare_spreadsheets(df):
         # cost basis = (Token price USD * trade size + previous cost basis USD * previous holdings) / current_holdings                   
         buy_df.loc[i, 'cost_basis'] = (buy_df.loc[i, 'price_x_size'] + buy_df.loc[i, 'previous_holdings'] * buy_df.loc[i-1, 'cost_basis'])/buy_df.loc[i, 'current_holdings']
 
+    # Drop temporary calculation column prior to merge                            
+    buy_df = df.drop('price_x_size', 1)
 
+    # Next step is to re-merge the buy_df and sell_df
+    # Resort by date
+    # df['cost_basis'].fillna(method='ffill') --> this will set all sell cost basis values to first non zero cell above
+                            
     sell_df = sell_df.append([np.sign(df[df['size']) == -1]])
                               
     # | x | unix | date | token | Token price USD | size | current_holdings | previous_holdings | cost_basis |
