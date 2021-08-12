@@ -18,13 +18,22 @@ def prepare_spreadsheets(df):
     # Only buy orders will directly affect the cost basis
     # Only sell orders will directly lead to capital gains / losses
     
-    # | unix | date | token | Token price USD | size | current_holdings | previous_holdings |
-    # | unix | date | LINK  |       10        |  +50 |        50        |         0         |
-    # | unix | date | LINK  |       25        |  -25 |        50        |         75        |
-    # | unix | date | LINK  |       20        |  +25 |        75        |         50        |
+    # | x | unix | date | token | Token price USD | size | current_holdings | previous_holdings |
+    # | 2 | unix | date | LINK  |       10        |  +50 |        50        |         0         |
+    # | 3 | unix | date | LINK  |       25        |  -25 |        25        |         50        |
+    # | 4 | unix | date | LINK  |       20        |  +25 |        50        |         25        |
     
     buy_df = buy_df.append([np.sign(df[df['size']) == 1]])
+                            
+    # | x | unix | date | token | Token price USD | size | current_holdings | previous_holdings |
+    # | 2 | unix | date | LINK  |       10        |  +50 |        50        |         0         |
+    # | 4 | unix | date | LINK  |       20        |  +25 |        50        |         25        |
+                            
     sell_df = sell_df.append([np.sign(df[df['size']) == -1]])
+                              
+    # | x | unix | date | token | Token price USD | size | current_holdings | previous_holdings |
+    # | 3 | unix | date | LINK  |       25        |  -25 |        25        |         50        |
+                            
                              
    """ REQUIRES TESTING: END """
     
