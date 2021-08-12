@@ -24,9 +24,10 @@ def prepare_spreadsheets(df):
     # This is because the 'cost_basis_size' will be lead to a 0 weighting in SELL cases, and correctly leave the cost basis 
     # unchanged to that of the most recent 'BUY' order above - simplifying the process.
     
-    # | unix | date | token | Token price USD | size | current_holdings | previous_holdings | cost_basis_size | cur_trans_wt |
-    # | unix | date | LINK  |       10        |  +50 |        50        |         0         |        50       |     500      |
-    # | unix | date | LINK  |       10        |  -10 |        40        |         50        |        0        |     0        |
+    # | unix | date | token | Token price USD | size | current_holdings | previous_holdings | cost_basis_size | cur_trans_wt | cur_cost_basis    | prev_cost_basis |
+    # | unix | date | LINK  |       10        |  +50 |        50        |         0         |        50       |     500      |(500)+(0*0)/50= 10 |       0         |
+    # | unix | date | LINK  |       12        |  -10 |        40        |         50        |        0        |     0        |(40-50)*0 +        |       10        |
+    # | unix | date | LINK  |       15        |  +25 |        65        |         40        |        25       |     375      |(0)+(5             |       10        |
     
     # Step 1: Create an identical column
     df['cur_cost_basis_size'] = df['size']
