@@ -24,11 +24,10 @@ def prepare_spreadsheets(df):
     # This is because the 'cost_basis_size' will be lead to a 0 weighting in SELL cases, and correctly leave the cost basis 
     # unchanged to that of the most recent 'BUY' order above - simplifying the process.
     
-    #| unix | date | token | Token price USD | size | current_holdings | previous_holdings | cost_basis_size |
-
-    #| unix | date | LINK  |       10        |  +50 |        50        |         0         |        50       |
-    #| unix | date | LINK  |       10        |  -10 |        50        |         0         |        0        |
-
+    # | unix | date | token | Token price USD | size | current_holdings | previous_holdings | cost_basis_size | cur_trans_wt |
+    # | unix | date | LINK  |       10        |  +50 |        50        |         0         |        50       |     500      |
+    # | unix | date | LINK  |       10        |  -10 |        40        |         50        |        0        |     0        |
+    
     # Step 1: Create an identical column
     df['cur_cost_basis_size'] = df['size']
     # Step 2: If the sign of a size column is negative (SELL), set the corresponding value in 'cost_basis_size' to 0 
