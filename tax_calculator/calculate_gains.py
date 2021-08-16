@@ -49,25 +49,44 @@ def prepare_spreadsheets(df):
 
     buy_df = buy_df.drop('price_x_size', 1)  # Drop temporary calculation column prior to merge
 
-    # Next step is to re-merge the buy_df and sell_df
-    # Resort by date
-    # df['cost_basis'].fillna(method='ffill') --> this will set all sell cost basis values to first non zero cell above
-
     merged_dataframe = pd.concat([buy_df, sell_df])
     merged_dataframe = merged_dataframe.sort_values(by=['date'])
-
-    merged_dataframe["cost_basis"] = merged_dataframe["cost_basis"].ffill()
-
+    merged_dataframe["cost_basis"] = merged_dataframe["cost_basis"].ffill()  # Forward fill cost basis (sell orders)
     merged_dataframe.reset_index(drop=True, inplace=True)
 
-    """ REQUIRES TESTING: END """
+    merged_dataframe['price_change'] = merged_dataframe["Token price USD"] - merged_dataframe["cost_basis"]
 
     return merged_dataframe
 
 
+def get_profit_loss(df,name):
+    sell_df = df[df['sign'] == -1].copy()
+
+    sell_df['trade_status'] = np.sign(df['price_change'])
+
+    loss_df = sell_df[sell_df['trade_status'] == -1].copy()
+    profit_df = sell_df[sell_df['trade_status'] == 1].copy()
+
+    loss_df['total'] = loss_df['price_change'] * loss_df['size']
+    profit_df['total'] = profit_df['price_change'] * profit_df['size'] * -1
+
+    crypto_cap_gains = profit_df['total'].sum()
+    crypto_cap_losses = loss_df['total'].sum()
+
+    loss_gain_data = np.array([name, crypto_cap_gains, crypto_cap_losses])
+
+    return loss_gain_data
+
+
 def calculate(cryptos_traded, df, file_paths):
     # Prepare data
+    profit_loss_data = []
+
     for name in cryptos_traded:
         df[name] = prepare_spreadsheets(df[name])
 
-    return df
+        profit_loss_data.append(get_profit_loss(df[name], name))
+
+    profit_loss_df = pd.DataFrame(data=profit_loss_data, columns=["name", "gains", "losses"])
+
+    return df, profit_loss_df
