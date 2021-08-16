@@ -20,7 +20,7 @@ def get_crypto_dataframes(df):
         crypto_portfolios[crypto] = crypto_portfolios[crypto].sort_values(by="unix")
         crypto_portfolios[crypto] = crypto_portfolios[crypto].reset_index(drop=True)
 
-    return crypto_portfolios
+    return c1s_traded, crypto_portfolios
 
 
 def tidy_portfolio(df,crypto,file_paths):
@@ -66,10 +66,10 @@ def tidy_portfolio(df,crypto,file_paths):
 
 
 def make_portfolios(df,file_paths):
-    crypto_portfolios = get_crypto_dataframes(df)
+    c1s_traded, crypto_portfolios = get_crypto_dataframes(df)
     crypto_portfolios['BTC'].to_csv(file_paths['results'] + "\Bitcoin.csv")
 
     for name in crypto_portfolios:
         crypto_portfolios[name] = tidy_portfolio(crypto_portfolios[name], name, file_paths)
 
-    return crypto_portfolios
+    return c1s_traded, crypto_portfolios

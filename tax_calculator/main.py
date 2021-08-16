@@ -44,10 +44,10 @@ def main(file_paths):
     df = df.reset_index(drop=True)
 
     # Separate into many data frames - one for each unique currency traded
-    crypto_dict = crypto_USD_portfolios.make_portfolios(df, file_paths)
+    cryptos_traded, crypto_dict = crypto_USD_portfolios.make_portfolios(df, file_paths)
 
     # Final calculations - cost basis - capital gains - capital losses
-    crypto_dict = calculate_gains.calculate(crypto_dict, file_paths)
+    crypto_dict = calculate_gains.calculate(cryptos_traded, crypto_dict, file_paths)
 
     # Save merged portfolio to local directory
     crypto_dict['BTC'].to_csv(file_paths['results'] + "\portfolio.csv")
