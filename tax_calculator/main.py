@@ -46,14 +46,8 @@ def main(file_paths):
     # Separate into many data frames - one for each unique currency traded
     cryptos_traded, crypto_dict = crypto_USD_portfolios.make_portfolios(df, file_paths)
 
-    # Final calculations - cost basis - capital gains - capital losses
-    crypto_dict, profit_loss_df = calculate_gains.calculate(cryptos_traded, crypto_dict, file_paths)
-
     # Save merged portfolio to local directory
-    crypto_dict['LINK'].to_csv(file_paths['results'] + "\portfolio.csv")
-    profit_loss_df.to_csv(file_paths['results'] + "\complete.csv")
-
-    print(profit_loss_df)
+    crypto_dict['ALGO'].to_csv(file_paths['results'] + "\Algorand_Priced.csv")
 
     print(time.time() - t)
 
