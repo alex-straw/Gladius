@@ -11,7 +11,6 @@ import uniform_coinbase_pro
 import uniform_coinbase
 import evaluate_in_fiat
 import crypto_USD_portfolios
-import calculate_gains
 
 
 file_paths = {'coinbase': r"C:\Users\alexa\Desktop\user_spreadsheets\cb.csv",
