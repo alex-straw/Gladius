@@ -1,16 +1,19 @@
 import numpy as np
 import pandas as pd
 
+
 def group_same_day(unique_days,df):
-    pass
+    for day in unique_days:
+        print(day)
+        print(df['date'])
 
 
 def get_days_traded(df):
-    df['date'] = pd.to_datetime(df['date'])
+    df['date'] = pd.to_datetime(df['date']).dt.normalize()
     df = df.set_index(pd.DatetimeIndex(df['date']))
 
     # Get unique days traded for building same day CGT portfolios
-    unique_days = df["date"].dt.normalize().unique()
+    unique_days = df['date'].unique()
 
     return unique_days, df
 
