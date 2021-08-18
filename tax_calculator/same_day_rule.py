@@ -33,7 +33,9 @@ def group_same_day(unique_days, df):
     same_day_df = {'date': date,
                    'trade_type': trade_type,
                    'token_quantity': tok_grouped_by_day,
-                   'value_usd': value_grouped_by_day}
+                   'value_usd': value_grouped_by_day,
+                   }
+
     df = pd.DataFrame(data=same_day_df)
 
     return df
