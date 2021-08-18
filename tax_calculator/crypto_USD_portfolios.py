@@ -61,6 +61,7 @@ def tidy_portfolio(df,crypto,file_paths):
     df = df.reset_index(drop=True)
 
     df['current_holdings'] = df['size'].cumsum()
+    df['value'] = df['size'] * df['Token price USD']
 
     return df
 
