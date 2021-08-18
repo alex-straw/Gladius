@@ -23,7 +23,7 @@ def get_crypto_dataframes(df):
     return c1s_traded, crypto_portfolios
 
 
-def tidy_portfolio(df,crypto,file_paths):
+def tidy_portfolio(df, crypto, file_paths):
     """
     This function builds a new data frame that only contains:
         -itself
@@ -62,15 +62,18 @@ def tidy_portfolio(df,crypto,file_paths):
 
     df['current_holdings'] = df['size'].cumsum()
     df['value'] = df['size'] * df['Token price USD']
+    df['sign'] = np.sign(df['size'])
 
     return df
 
 
-def make_portfolios(df,file_paths):
+def make_portfolios(df, file_paths):
     c1s_traded, crypto_portfolios = get_crypto_dataframes(df)
     crypto_portfolios['BTC'].to_csv(file_paths['results'] + "\Bitcoin.csv")
 
     for name in crypto_portfolios:
         crypto_portfolios[name] = tidy_portfolio(crypto_portfolios[name], name, file_paths)
+
+        crypto_portfolios[name]['trade_type'] = np.where(crypto_portfolios[name]['sign'] == 1, 'acquisition', 'disposal')
 
     return c1s_traded, crypto_portfolios
