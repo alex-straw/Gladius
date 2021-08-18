@@ -33,7 +33,7 @@ def group_same_day(unique_days, df):
         residual = quantity_acquired - quantity_disposed
 
         if residual > 0:
-            # if the residual is greater than 0 (net acquisition for the day):
+            # if the residual is greater than 0 --> it is a net acquisition for the day
             trade_type.extend(['acquisition'])
             quantity_token.extend([residual])
 
@@ -47,7 +47,7 @@ def group_same_day(unique_days, df):
             residual_pool_value.extend([(residual / quantity_acquired) * pooled_value_acq])
 
         if residual < 0:
-            # if the residual is less than 0 (net disposal for the day):
+            # if the residual is less than 0 --> it is a net disposal for the day
             trade_type.extend(['disposal'])
             quantity_token.extend([residual * -1])  # Note minus sign
 

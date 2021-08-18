@@ -12,6 +12,7 @@ import uniform_coinbase
 import evaluate_in_fiat
 import crypto_USD_portfolios
 import same_day_rule
+import thirty_day_s104_rules
 
 
 file_paths = {'coinbase': r"C:\Users\alexa\Desktop\user_spreadsheets\cb.csv",
@@ -48,6 +49,9 @@ def main(file_paths):
 
     # Handle all same day transactions and settle each day in terms of the net trade type: acquisition or disposal
     crypto_dict = same_day_rule.group_transactions(crypto_dict)
+
+    # Handle 30 day rule and S104 rules
+    crypto_dict = thirty_day_s104_rules.match_crypto(crypto_dict)
 
     # Save merged portfolio to local directory
     crypto_dict['BTC'].to_csv(file_paths['results'] + "\BTC_priced.csv")
