@@ -11,6 +11,7 @@ import uniform_coinbase_pro
 import uniform_coinbase
 import evaluate_in_fiat
 import crypto_USD_portfolios
+import same_day_rule
 
 
 file_paths = {'coinbase': r"C:\Users\alexa\Desktop\user_spreadsheets\cb.csv",
@@ -47,6 +48,9 @@ def main(file_paths):
 
     # Save merged portfolio to local directory
     crypto_dict['ALGO'].to_csv(file_paths['results'] + "\Algorand_Priced.csv")
+
+    # Settle each day into 2 camps - acquisitions and disposals - according to HMRC guidance
+    crypto_dict = same_day_rule.group_transactions(crypto_dict)
 
     print(time.time() - t)
 
