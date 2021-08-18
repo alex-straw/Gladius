@@ -46,11 +46,11 @@ def main(file_paths):
     # Separate into many data frames - one for each unique currency traded
     cryptos_traded, crypto_dict = crypto_USD_portfolios.make_portfolios(df, file_paths)
 
-    # Save merged portfolio to local directory
-    crypto_dict['ALGO'].to_csv(file_paths['results'] + "\Algorand_Priced.csv")
-
     # Settle each day into 2 camps - acquisitions and disposals - according to HMRC guidance
     crypto_dict = same_day_rule.group_transactions(crypto_dict)
+
+    # Save merged portfolio to local directory
+    crypto_dict['ALGO'].to_csv(file_paths['results'] + "\Algorand_Priced.csv")
 
     print(time.time() - t)
 
