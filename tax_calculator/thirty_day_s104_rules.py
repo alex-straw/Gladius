@@ -16,6 +16,6 @@ def final_pass(crypto_dict):
     """
 
     for name in crypto_dict:
-        crypto_dict = match_crypto(crypto_dict[name])
+        crypto_dict[name] = match_crypto(crypto_dict[name])
 
     return crypto_dict
