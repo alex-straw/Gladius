@@ -87,6 +87,6 @@ def organise_data(df):
 
     df['c1 size'] = df['c1 size'] * -1 * np.sign(df["c2 size"])  # Minus if SELL, plus if BUY
 
-    df_required_cols = df[['date','unix','side','c1 name','c1 size','c2 name','c2 size']]
+    df_required_cols = df[['date', 'unix', 'side', 'c1 name', 'c1 size', 'c2 name', 'c2 size']]
 
     return df_required_cols
