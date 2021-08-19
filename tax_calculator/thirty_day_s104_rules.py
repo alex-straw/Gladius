@@ -19,38 +19,22 @@ def match_crypto(df):
             time = df.loc[i, 'date']  # Current date
             end_date = time + datetime.timedelta(days=30)  # 30 day cutoff date
 
-            disposal_quantity = df.loc[i, 'quantity_token']
-            disposal_consideration = df.loc[i, 'residual_pool_value']
+            # 'Less allowable costs' for acquisitions that were assigned to disposals in the proceeding 30 day period
             allowable_cost_pool = 0
-            print("--------------")
-            print(disposal_quantity)
+
+            disposal_quantity = df.loc[i, 'quantity_token']
+            temp_disposal_quantity = disposal_quantity
+            disposal_consideration = df.loc[i, 'residual_pool_value']
 
             # Look for acquisitions in the 30 days following a disposal to match crypto
             mask = (df['date'] > time) & (df['date'] <= end_date) & (df['trade_type'] == 'acquisition')
             acq_list = df.index[mask].tolist()
 
             for index in acq_list:
-                original_quantity, unmatched_quantity, allowable_value = df.iloc[index][['quantity_token',
-                                                                                         'unmatched_tokens',
-                                                                                         'residual_pool_value']]
-                # gain = consideration - less allowable costs
+                quantity_token, unmatched_quantity, allowable_value = df.iloc[index][['quantity_token',
+                                                                                      'unmatched_tokens',
+                                                                                      'residual_pool_value']]
 
-                if disposal_quantity > unmatched_quantity:
-                    disposal_quantity -= unmatched_quantity
-                    unmatched_quantity = 0
-                    allowable_cost_pool += allowable_value
-
-                if disposal_quantity < unmatched_quantity:
-                    disposal_quantity = 0
-                    unmatched_quantity -= disposal_quantity
-                    allowable_cost_pool += (disposal_quantity/original_quantity)*allowable_value
-
-                if disposal_quantity == unmatched_quantity:
-                    disposal_quantity = 0
-                    unmatched_quantity = 0
-                    allowable_cost_pool += allowable_value
-
-                df.at[index, 'unmatched_tokens'] = unmatched_quantity
     return df
 
 
