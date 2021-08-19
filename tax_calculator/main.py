@@ -24,7 +24,7 @@ file_paths = {'coinbase': r"C:\Users\alexa\Desktop\user_spreadsheets\cb.csv",
 
 
 def main(file_paths):
-    t = time.time()
+    #t = time.time()
 
     # Load trading data from excel spreadsheets
     coinbase_df, coinbase_pro_df = load_files.load_trading_data(file_paths['coinbase'], file_paths['coinbase_pro'])
@@ -56,7 +56,7 @@ def main(file_paths):
     # Save merged portfolio to local directory
     crypto_dict['BTC'].to_csv(file_paths['results'] + "\BTC_priced.csv")
 
-    print(time.time() - t)
+    #print(time.time() - t)
 
 
 if __name__ == '__main__':
