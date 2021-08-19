@@ -11,7 +11,7 @@ def get_data(specific_excel_file):
     return df
 
 
-def get_external_prices(df,data_path):
+def get_external_prices(df, data_path):
     """ Retrieves prices for a given unix time """
     token_prices = []
     price_data = pd.read_csv(data_path, skiprows=1)
@@ -37,18 +37,15 @@ def dict_dataframes(df, type):
 
     for currency in c_list:
         c_portfolios[currency] = pd.DataFrame()
-
         c_portfolios[currency] = df.loc[(df[type] == currency)].copy()
-
-        #  c_portfolios[currency] = c_portfolios[currency].append([df[df[type] == currency]])
 
     return c_list, c_portfolios
 
 
 def get_prices(df, file_paths):
-    t = time.time()
+    # t = time.time()
     c2_list, c2_portfolios = dict_dataframes(df, "c2 name")
-    print(time.time() - t)
+    # print(time.time() - t)
 
     exchange_rates = {'USDC': 1,
                       'GBP': 1.38,

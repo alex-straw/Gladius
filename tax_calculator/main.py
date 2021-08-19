@@ -51,7 +51,7 @@ def main(file_paths):
     crypto_dict = same_day_rule.group_transactions(crypto_dict)
 
     # Handle 30 day rule and S104 rules
-    crypto_dict = thirty_day_s104_rules.match_crypto(crypto_dict)
+    crypto_dict = thirty_day_s104_rules.final_pass(crypto_dict)
 
     # Save merged portfolio to local directory
     crypto_dict['BTC'].to_csv(file_paths['results'] + "\BTC_priced.csv")
