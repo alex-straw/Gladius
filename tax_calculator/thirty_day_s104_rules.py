@@ -13,7 +13,7 @@ def match_crypto(df):
             # As orders are handled chronologically, if any acquisition has unmatched shares when
             # it is reached, these can go directly into the s104 pool
             s104_pool_allowable_costs += df.loc[i, 'residual_pool_value']
-            s104_quantity_token += df.loc[i, 'unmatched_tokens']
+            s104_quantity_token += df.loc[i, 'unmatched_acqs']
 
         if df.loc[i, 'trade_type'] == 'disposal':
             time = df.loc[i, 'date']  # Current date
@@ -30,11 +30,19 @@ def match_crypto(df):
             mask = (df['date'] > time) & (df['date'] <= end_date) & (df['trade_type'] == 'acquisition')
             acq_list = df.index[mask].tolist()
 
+            """
             for index in acq_list:
                 quantity_token, unmatched_quantity, allowable_value = df.iloc[index][['quantity_token',
                                                                                       'unmatched_tokens',
                                                                                       'residual_pool_value']]
+            """
 
+    return df
+
+
+def add_unmatched_acq_col(df):
+    df['unmatched_acqs'] = df['quantity_token']
+    df.loc[(df['trade_type'] == 'disposal'), 'unmatched_acqs'] = 0
     return df
 
 
@@ -51,8 +59,9 @@ def final_pass(crypto_dict):
         # Unmatched tokens will be gradually be matched and reduced.  Quantity token will remain unchanged.
         crypto_dict[name]['net_30_day'] = [0] * len(crypto_dict[name])
         crypto_dict[name]['net_s104_pool'] = [0] * len(crypto_dict[name])
-        crypto_dict[name]['unmatched_tokens'] = crypto_dict[name]['quantity_token']
         crypto_dict[name]['residual_pool_value'] = abs(crypto_dict[name]['residual_pool_value'])
+
+        crypto_dict[name] = add_unmatched_acq_col(crypto_dict[name])
 
         crypto_dict[name] = match_crypto(crypto_dict[name])
 
