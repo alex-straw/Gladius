@@ -3,39 +3,77 @@ import numpy as np
 import datetime as datetime
 
 
-def match_crypto(df):
+class S104Pool(object):
+    """ This class is used to interract with each coins S104 pool """
+    def __init__(self, name):
+        self.name = name
+        self.s104_quantity = 0
+        self.s104_pool_value = 0
 
-    s104_pool_allowable_costs = 0
-    s104_quantity_token = 0
+    def get_s104_quantity(self):
+        return self.s104_quantity
 
-    for i in range(1, len(df)):
+    def get_s104_pool_value(self):
+        return self.s104_pool_value
+
+    def acquisition_s104(self, acq_value, quantity):
+        """ Update s104 pool to reflect a new acquisition of crypto"""
+        self.s104_quantity += quantity
+        self.s104_pool_value += acq_value
+
+    def disposal_s104(self, disp_value, s104_quantity_sold):
+        """ Return gain when crypto is sold from the S104 pool"""
+
+        if disp_value < 0.0000001:  # Handles boundary cases where value < e-10
+            pass
+        else:
+            gain = disp_value - self.s104_pool_value*(s104_quantity_sold/self.s104_quantity)
+            self.s104_quantity -= s104_quantity_sold
+            return gain
+
+
+def first_fill(disp_quantity, acq_quantity, acq_value, acq_unmatched):
+    pass
+
+
+def handle_disposal(df, index, s104_obj):
+    cols_req_disp = ['date', 'quantity_token', 'residual_pool_value']
+    date, disp_quantity, disp_value = df.loc[index][cols_req_disp]   # Current date
+    end_date = date + datetime.timedelta(days=30)       # 30 day cutoff date
+
+    cols_req_acq = ['quantity_token', 'residual_pool_value', 'unmatched_acqs']
+    mask = (df['date'] > date) & (df['date'] <= end_date) & (df['trade_type'] == 'acquisition')
+
+    df_acq = df.loc[mask]
+    acq_quantity, acq_value, acq_unmatched = df_acq[cols_req_acq]
+
+    if len(df_acq) == 0:
+        """ Handles the case where there are no acquisitions in the next 30 days """
+        s104_gain = s104_obj.disposal_s104(disp_value, disp_quantity)
+        df.loc[index, 'net_s104_pool'] = s104_gain
+    else:
+        print(df_acq)
+        first_fill(disp_quantity, acq_quantity, acq_value, acq_unmatched)
+
+    return 20
+
+
+def match_crypto(df, s104_obj):
+
+    for i in range(0, len(df)):
+        """ Loop through each day of trading in the data frame """
+
         if df.loc[i, 'trade_type'] == 'acquisition':
-            # As orders are handled chronologically, if any acquisition has unmatched shares when
-            # it is reached, these can go directly into the s104 pool
-            s104_pool_allowable_costs += df.loc[i, 'residual_pool_value']
-            s104_quantity_token += df.loc[i, 'unmatched_acqs']
+            """ Update s104 if an acquisition is reached with unmatched crypto """
+            s104_obj.acquisition_s104(df.loc[i, 'residual_pool_value'], df.loc[i, 'unmatched_acqs'])
 
         if df.loc[i, 'trade_type'] == 'disposal':
-            time = df.loc[i, 'date']  # Current date
-            end_date = time + datetime.timedelta(days=30)  # 30 day cutoff date
-
-            # 'Less allowable costs' for acquisitions that were assigned to disposals in the proceeding 30 day period
-            allowable_cost_pool = 0
-
-            disposal_quantity = df.loc[i, 'quantity_token']
-            temp_disposal_quantity = disposal_quantity
-            disposal_consideration = df.loc[i, 'residual_pool_value']
-
-            # Look for acquisitions in the 30 days following a disposal to match crypto
-            mask = (df['date'] > time) & (df['date'] <= end_date) & (df['trade_type'] == 'acquisition')
-            acq_list = df.index[mask].tolist()
-
+            """ 
+            If trade is a disposal:
+                1. 30 day rule
+                2. S104 pool
             """
-            for index in acq_list:
-                quantity_token, unmatched_quantity, allowable_value = df.iloc[index][['quantity_token',
-                                                                                      'unmatched_tokens',
-                                                                                      'residual_pool_value']]
-            """
+            gain = handle_disposal(df, i, s104_obj)
 
     return df
 
@@ -56,6 +94,10 @@ def final_pass(crypto_dict):
     """
 
     for name in crypto_dict:
+
+        s104_obj = name + "_s104"
+        s104_obj = S104Pool(name)  # Initialise a s104 pool for each crypto currency that is traded
+
         # Unmatched tokens will be gradually be matched and reduced.  Quantity token will remain unchanged.
         crypto_dict[name]['net_30_day'] = [0] * len(crypto_dict[name])
         crypto_dict[name]['net_s104_pool'] = [0] * len(crypto_dict[name])
@@ -63,6 +105,6 @@ def final_pass(crypto_dict):
 
         crypto_dict[name] = add_unmatched_acq_col(crypto_dict[name])
 
-        crypto_dict[name] = match_crypto(crypto_dict[name])
+        crypto_dict[name] = match_crypto(crypto_dict[name], s104_obj)
 
     return crypto_dict

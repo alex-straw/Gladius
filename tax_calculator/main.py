@@ -54,7 +54,7 @@ def main(file_paths):
     crypto_dict = thirty_day_s104_rules.final_pass(crypto_dict)
 
     # Save merged portfolio to local directory
-    crypto_dict['BTC'].to_csv(file_paths['results'] + "\BTC_priced.csv")
+    crypto_dict['SUSHI'].to_csv(file_paths['results'] + "\sushi_priced.csv")
 
     print(time.time() - t)
 
