@@ -5,6 +5,7 @@ import datetime as datetime
 
 class S104Pool(object):
     """ This class is used to interract with each coins S104 pool """
+
     def __init__(self, name):
         self.name = name
         self.s104_quantity = 0
@@ -27,39 +28,41 @@ class S104Pool(object):
         if disp_value < 0.0000001:  # Handles boundary cases where value < e-10
             pass
         else:
-            gain = disp_value - self.s104_pool_value*(s104_quantity_sold/self.s104_quantity)
+            gain = disp_value - self.s104_pool_value * (s104_quantity_sold / self.s104_quantity)
             self.s104_quantity -= s104_quantity_sold
             return gain
 
 
-def first_fill(disp_quantity, acq_quantity, acq_value, acq_unmatched):
-    pass
+def first_fill(disp_quantity, df):
+    indexes = df.index.tolist()
+    for index in indexes:
+        acq_quantity, acq_value, acq_unmatched = df.loc[index, ['quantity_token',
+                                                                'residual_pool_value',
+                                                                'unmatched_acqs']]
+
+        print(acq_quantity, acq_value, acq_unmatched)
 
 
 def handle_disposal(df, index, s104_obj):
     cols_req_disp = ['date', 'quantity_token', 'residual_pool_value']
-    date, disp_quantity, disp_value = df.loc[index][cols_req_disp]   # Current date
-    end_date = date + datetime.timedelta(days=30)       # 30 day cutoff date
+    date, disp_quantity, disp_value = df.loc[index][cols_req_disp]  # Current date
+    end_date = date + datetime.timedelta(days=30)  # 30 day cutoff date
 
-    cols_req_acq = ['quantity_token', 'residual_pool_value', 'unmatched_acqs']
     mask = (df['date'] > date) & (df['date'] <= end_date) & (df['trade_type'] == 'acquisition')
 
     df_acq = df.loc[mask]
-    acq_quantity, acq_value, acq_unmatched = df_acq[cols_req_acq]
 
     if len(df_acq) == 0:
         """ Handles the case where there are no acquisitions in the next 30 days """
         s104_gain = s104_obj.disposal_s104(disp_value, disp_quantity)
         df.loc[index, 'net_s104_pool'] = s104_gain
     else:
-        print(df_acq)
-        first_fill(disp_quantity, acq_quantity, acq_value, acq_unmatched)
+        first_fill(disp_quantity, df_acq)
 
     return 20
 
 
 def match_crypto(df, s104_obj):
-
     for i in range(0, len(df)):
         """ Loop through each day of trading in the data frame """
 
@@ -94,7 +97,6 @@ def final_pass(crypto_dict):
     """
 
     for name in crypto_dict:
-
         s104_obj = name + "_s104"
         s104_obj = S104Pool(name)  # Initialise a s104 pool for each crypto currency that is traded
 
