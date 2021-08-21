@@ -42,7 +42,7 @@ def dict_dataframes(df, type):
     return c_list, c_portfolios
 
 
-def get_prices(df, file_paths):
+def get_prices(df, file_paths, parameters):
     # t = time.time()
     c2_list, c2_portfolios = dict_dataframes(df, "c2 name")
     # print(time.time() - t)
@@ -63,8 +63,12 @@ def get_prices(df, file_paths):
             c2_portfolios[c2]['c2 unit price USD'] = token_prices
 
     df = pd.concat(c2_portfolios)
-    df['c2 size USD'] = df['c2 unit price USD'] * df['c2 size']
-    df['c1 size USD'] = df['c2 size USD'] * - 1
-    df['c1 unit price USD'] = abs(df['c2 size USD'] / df['c1 size'])
+
+    # Convert from USD to GBP
+    df['c2 unit price'] = df['c2 unit price USD'] / exchange_rates[parameters['home_currency']]
+
+    df['c2 size fiat'] = df['c2 unit price'] * df['c2 size']
+    df['c1 size fiat'] = df['c2 size fiat'] * - 1
+    df['c1 unit price'] = abs(df['c2 size fiat'] / df['c1 size'])
 
     return df

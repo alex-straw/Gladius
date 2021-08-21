@@ -6,7 +6,7 @@ import datetime as datetime
 class S104Pool(object):
     """
     Each crypto asset has a S104 pool
-    The S104 pool typically reflects assets that have been held for longer periods of time.
+    The S104 pool reflects assets that have been held for longer periods of time.
     """
 
     def __init__(self, name):

@@ -27,13 +27,12 @@ def tidy_portfolio(df, crypto, file_paths):
     """
     This function builds a new data frame that only contains:
         -itself
-        -USD
 
     This is done to prep for tax calculations later - as they are resolved in FIAT
     """
 
-    columns_lhs = ['date', 'unix', 'c1 name', 'c1 size', 'c1 unit price USD']
-    columns_rhs = ['date', 'unix', 'c2 name', 'c2 size', 'c2 unit price USD']
+    columns_lhs = ['date', 'unix', 'c1 name', 'c1 size', 'c1 unit price']
+    columns_rhs = ['date', 'unix', 'c2 name', 'c2 size', 'c2 unit price']
 
     #   This is necessary as some coins can act similarly to FIAT - as a medium of exchange (e.g BTC/ETH)
     #   They are present in both columns: c1, and c2.
@@ -46,13 +45,13 @@ def tidy_portfolio(df, crypto, file_paths):
     left_side_df = left_side_df.rename(columns={'unix': 'unix',
                                                 'side': 'side',
                                                 'c1 name': 'token',
-                                                'c1 unit price USD': 'Token price USD',
+                                                'c1 unit price': 'Token price',
                                                 'c1 size': 'size'})
 
     right_side_df = right_side_df.rename(columns={'unix': 'unix',
                                                   'side': 'side',
                                                   'c2 name': 'token',
-                                                  'c2 unit price USD': 'Token price USD',
+                                                  'c2 unit price': 'Token price',
                                                   'c2 size': 'size'})
 
     df = pd.concat([left_side_df, right_side_df])
@@ -61,7 +60,7 @@ def tidy_portfolio(df, crypto, file_paths):
     df = df.reset_index(drop=True)
 
     df['current_holdings'] = df['size'].cumsum()
-    df['value'] = df['size'] * df['Token price USD']
+    df['value'] = df['size'] * df['Token price']
     df['sign'] = np.sign(df['size'])
 
     return df

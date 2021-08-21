@@ -22,8 +22,10 @@ file_paths = {'coinbase': r"C:\Users\alexa\Desktop\user_spreadsheets\cb.csv",
               'results': r"C:\Users\alexa\Desktop\output_testing"
               }
 
+parameters = {'home_currency': 'GBP'}
 
-def main(file_paths):
+
+def main(file_paths, parameters):
     t = time.time()
 
     # Load trading data from excel spreadsheets
@@ -40,25 +42,26 @@ def main(file_paths):
     df = pd.concat(portfolio_array)
 
     # Get total value of transaction and token prices in USD and sort chronologically by unix time
-    df = evaluate_in_fiat.get_prices(df, file_paths)
+    df = evaluate_in_fiat.get_prices(df, file_paths, parameters)
     df = df.sort_values(by=["date"])
     df = df.reset_index(drop=True)
 
     # Separate into many data frames - one for each unique currency traded
+    # Currencies are converted into USD first as this is the market with the highest volume
+    # Higher volume typically improves price accuracy, and reduces spread
     cryptos_traded, crypto_dict = crypto_USD_portfolios.make_portfolios(df, file_paths)
-    crypto_dict['FIL'].to_csv(file_paths['results'] + "\FIL_PRE.csv")
 
     # Handle all same day transactions and settle each day in terms of the net trade type: acquisition or disposal
     crypto_dict = same_day_rule.group_transactions(crypto_dict)
 
     # Handle 30 day rule and S104 rules
     crypto_dict = thirty_day_s104_rules.final_pass(crypto_dict)
+    crypto_dict['LINK'].to_csv(file_paths['results'] + "\link.csv")
 
     # Save merged portfolio to local directory
-    crypto_dict['FIL'].to_csv(file_paths['results'] + "\FIL.csv")
 
     print(time.time() - t)
 
 
 if __name__ == '__main__':
-    main(file_paths)
+    main(file_paths, parameters)
