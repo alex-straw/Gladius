@@ -13,6 +13,7 @@ import evaluate_in_fiat
 import crypto_USD_portfolios
 import same_day_rule
 import thirty_day_s104_rules
+import final_output
 
 
 file_paths = {'coinbase': r"C:\Users\alexa\Desktop\user_spreadsheets\cb.csv",
@@ -22,7 +23,8 @@ file_paths = {'coinbase': r"C:\Users\alexa\Desktop\user_spreadsheets\cb.csv",
               'results': r"C:\Users\alexa\Desktop\output_testing"
               }
 
-parameters = {'home_currency': 'GBP'}
+parameters = {'home_currency': 'GBP',
+              'tax_year': '2019'}
 
 
 def main(file_paths, parameters):
@@ -58,7 +60,7 @@ def main(file_paths, parameters):
     crypto_dict = thirty_day_s104_rules.final_pass(crypto_dict)
     crypto_dict['LINK'].to_csv(file_paths['results'] + "\link.csv")
 
-    # Save merged portfolio to local directory
+    summary = final_output.get_taxes(crypto_dict, parameters['tax_year'])
 
     print(time.time() - t)
 
