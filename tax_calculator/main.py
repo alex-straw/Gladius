@@ -46,6 +46,7 @@ def main(file_paths):
 
     # Separate into many data frames - one for each unique currency traded
     cryptos_traded, crypto_dict = crypto_USD_portfolios.make_portfolios(df, file_paths)
+    crypto_dict['FIL'].to_csv(file_paths['results'] + "\FIL_PRE.csv")
 
     # Handle all same day transactions and settle each day in terms of the net trade type: acquisition or disposal
     crypto_dict = same_day_rule.group_transactions(crypto_dict)
@@ -54,7 +55,7 @@ def main(file_paths):
     crypto_dict = thirty_day_s104_rules.final_pass(crypto_dict)
 
     # Save merged portfolio to local directory
-    crypto_dict['SUSHI'].to_csv(file_paths['results'] + "\sushi_priced.csv")
+    crypto_dict['FIL'].to_csv(file_paths['results'] + "\FIL.csv")
 
     print(time.time() - t)
 
