@@ -24,7 +24,7 @@ file_paths = {'coinbase': r"C:\Users\alexa\Desktop\user_spreadsheets\cb.csv",
               }
 
 parameters = {'home_currency': 'GBP',
-              'tax_year': '2019'}
+              'tax_year': '2020'}
 
 
 def main(file_paths, parameters):

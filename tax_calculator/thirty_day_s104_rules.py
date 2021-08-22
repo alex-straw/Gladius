@@ -158,7 +158,7 @@ def handle_disposal(df, index, s104_obj):
 
         # If disposals are matched to acquisitions --> acqs_value is overwritten to reflect new pooled value
         gain_thirty_day, acqs_value = calculate_thirty_day_gain(acqs, rem_acqs, acqs_value, thirty_day_disp_value)
-        df.loc[index, 'net_30_day'] = gain_thirty_day  # Update spreadsheet with 30 day gains
+        df.loc[index, 'net_thirty_day'] = gain_thirty_day  # Update spreadsheet with 30 day gains
 
         if abs(rem_s104_qty - s104_obj.s104_quantity) < 0.0000001:
             # Where difference between disposal quantity and s104 quantity held is negligible, set them equal.
@@ -207,7 +207,7 @@ def final_pass(crypto_dict):
         s104_obj = S104Pool(name)  # Initialise a s104 pool for each crypto currency that is traded
 
         # Unmatched tokens will be gradually be matched and reduced.  Quantity token will remain unchanged.
-        crypto_dict[name]['net_30_day'] = [0] * len(crypto_dict[name])
+        crypto_dict[name]['net_thirty_day'] = [0] * len(crypto_dict[name])
         crypto_dict[name]['net_s104_pool'] = [0] * len(crypto_dict[name])
         crypto_dict[name]['residual_pool_value'] = abs(crypto_dict[name]['residual_pool_value'])
 
