@@ -109,7 +109,7 @@ def get_thirty_day_acqs(df, start_date):
     """
 
     end_date = start_date + datetime.timedelta(days=30)  # 30 day cutoff date
-    mask = (df['date'] > start_date) \
+    mask = (df['date'] >= start_date) \
            & (df['date'] <= end_date) \
            & (df['trade_type'] == 'acquisition') \
            & (df['unmatched_acqs'] > 0)  # Ignores acquisitions that are already fully matched to disposals
