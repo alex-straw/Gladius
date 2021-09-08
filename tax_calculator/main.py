@@ -32,22 +32,22 @@ def main(file_paths, parameters):
     t = time.time()
 
     # Load trading data from excel spreadsheets
-    # coinbase_df = load_files.coinbase(file_paths['coinbase'])
+    coinbase_df = load_files.coinbase(file_paths['coinbase'])
 
-    coinbase_pro_df = load_files.coinbase_pro(file_paths['GOV_example_6'])
+    coinbase_pro_df = load_files.coinbase_pro(file_paths['coinbase_pro'])
 
     # Standardise portfolios prior to data merge
     # FORMAT: | dd/mm/yyyy | unix | side | c1 name | c1 size | c2 name | c2 size | c2 size USD |
-    #coinbase_df = uniform_coinbase.organise_data(coinbase_df)
+    coinbase_df = uniform_coinbase.organise_data(coinbase_df)
 
     coinbase_pro_df = uniform_coinbase_pro.organise_data(coinbase_pro_df)
 
-    df = coinbase_pro_df
+    #df = coinbase_pro_df
 
-    #portfolio_array = [coinbase_pro_df, coinbase_df]
+    portfolio_array = [coinbase_pro_df, coinbase_df]
 
     # Merge portfolios
-    #df = pd.concat(portfolio_array)
+    df = pd.concat(portfolio_array)
 
     # Get total value of transaction and token prices in USD and sort chronologically by unix time
     df = evaluate_in_fiat.get_prices(df, file_paths, parameters)
@@ -59,14 +59,14 @@ def main(file_paths, parameters):
     # Higher volume typically improves price accuracy, and reduces spread
     cryptos_traded, crypto_dict = crypto_USD_portfolios.make_portfolios(df, file_paths)
 
-    crypto_dict['F'].to_csv(file_paths['results'] + "\F_PRE.csv")
+    crypto_dict['BTC'].to_csv(file_paths['results'] + "\BTC_PRE.csv")
 
     # Handle all same day transactions and settle each day in terms of the net trade type: acquisition or disposal
     crypto_dict = same_day_rule.group_transactions(crypto_dict)
 
     # Handle 30 day rule and S104 rules
     crypto_dict = thirty_day_s104_rules.final_pass(crypto_dict)
-    crypto_dict['F'].to_csv(file_paths['results'] + "\F.csv")
+    crypto_dict['BTC'].to_csv(file_paths['results'] + "\BTC.csv")
 
     summary = final_output.get_taxes(crypto_dict, parameters['tax_year'])
 
