@@ -15,6 +15,7 @@ tax_years = {'2019_start_date': '2019-04-06',
 
 class TaxObj(object):
     """ Tax summary for each crypto asset traded during the financial year """
+    """ Needs Work """
 
     def __init__(self, name):
         self.name = name
@@ -28,16 +29,17 @@ class TaxObj(object):
         self.thirty_day_cap_losses = 0
         self.thirty_day_cap_gains = 0
 
-        self.s104_cap_losses = 0
-        self.s104_cap_gains = 0
+        self.s104_pool_cap_losses = 0
+        self.s104_pool_cap_gains = 0
 
     def sum_totals(self):
-        self.total_cap_losses = self.same_day_cap_losses + self.thirty_day_cap_losses + self.s104_cap_losses
-        self.total_cap_gains = self.same_day_cap_gains + self.thirty_day_cap_gains + self.s104_cap_gains
+        self.total_cap_losses = self.same_day_cap_losses + self.thirty_day_cap_losses + self.s104_pool_cap_losses
+        self.total_cap_gains = self.same_day_cap_gains + self.thirty_day_cap_gains + self.s104_pool_cap_gains
 
 
 def sum_gains(name, df, rules):
     name = TaxObj(name)  # Create an instance of TaxObj for the given crypto asset
+    print(name)
 
     for rule in rules:
         column_name = "net_" + rule
@@ -45,6 +47,7 @@ def sum_gains(name, df, rules):
         attr_loss = rule + "_cap_losses"
         attr_gain = rule + "_cap_gains"
 
+        print(column_name)
         cap_losses = df[column_name][df[column_name] < 0].sum()
         cap_gains = df[column_name][df[column_name] > 0].sum()
 
@@ -63,6 +66,8 @@ def retrieve_data_tax_year(df, start, end):
 
 def get_taxes(crypto_dict, tax_year):
     rules = ["same_day", "thirty_day", "s104_pool"]
+
+    Objs = [TaxObj(name) for name in crypto_dict]
 
     start = tax_years[tax_year + '_start_date']
     end = tax_years[tax_year + '_end_date']
