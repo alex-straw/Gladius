@@ -13,6 +13,7 @@ import same_day_rule
 import thirty_day_s104_rules
 import final_output
 import uniform_exchange_data
+import user_input_validation
 
 file_paths = {'testing_cb_pro': r"C:\Users\alexa\Desktop\user_spreadsheets\scarlett_cb_pro.csv",
               'GOV_example_6': r"C:\Users\alexa\Desktop\user_spreadsheets\EXAMPLE_6_GOV.csv",
@@ -30,19 +31,24 @@ parameters = {'home_currency': 'GBP',
 def main(file_paths, parameters):
     t = time.time()
 
-    # Load trading data from excel spreadsheets
-    coinbase_df = load_files.coinbase(file_paths['coinbase'])
+    test_input = user_input_validation.test()
 
-    coinbase_pro_df = load_files.coinbase_pro(file_paths['coinbase_pro'])
+    print(test_input)
+
+
+    # Load trading data from excel spreadsheets
+    #coinbase_df = load_files.coinbase(file_paths['coinbase'])
+
+    #coinbase_pro_df = load_files.coinbase_pro(file_paths['coinbase_pro'])
 
     # Standardise portfolios prior to data merge
-    coinbase_df = uniform_exchange_data.coinbase_main(coinbase_df)
-    coinbase_pro_df = uniform_exchange_data.coinbase_pro_main(coinbase_pro_df)
+    #coinbase_df = uniform_exchange_data.coinbase_main(coinbase_df)
+    #coinbase_pro_df = uniform_exchange_data.coinbase_pro_main(coinbase_pro_df)
 
-    portfolio_array = [coinbase_pro_df, coinbase_df]
+    #portfolio_array = [coinbase_pro_df, coinbase_df]
 
     # Merge portfolios
-    df = pd.concat(portfolio_array)
+    #df = pd.concat(portfolio_array)
 
     # Get total value of transaction and token prices in USD and sort chronologically by unix time
 
