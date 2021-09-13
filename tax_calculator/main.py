@@ -14,6 +14,7 @@ import crypto_USD_portfolios
 import same_day_rule
 import thirty_day_s104_rules
 import final_output
+import uniform_exchange_data
 
 file_paths = {'testing_cb_pro': r"C:\Users\alexa\Desktop\user_spreadsheets\scarlett_cb_pro.csv",
               'GOV_example_6': r"C:\Users\alexa\Desktop\user_spreadsheets\EXAMPLE_6_GOV.csv",
@@ -37,12 +38,8 @@ def main(file_paths, parameters):
     coinbase_pro_df = load_files.coinbase_pro(file_paths['coinbase_pro'])
 
     # Standardise portfolios prior to data merge
-    # FORMAT: | dd/mm/yyyy | unix | side | c1 name | c1 size | c2 name | c2 size | c2 size USD |
-    coinbase_df = uniform_coinbase.organise_data(coinbase_df)
-
-    coinbase_pro_df = uniform_coinbase_pro.organise_data(coinbase_pro_df)
-
-    #df = coinbase_pro_df
+    coinbase_df = uniform_exchange_data.coinbase_main(coinbase_df)
+    coinbase_pro_df = uniform_exchange_data.coinbase_pro_main(coinbase_pro_df)
 
     portfolio_array = [coinbase_pro_df, coinbase_df]
 
