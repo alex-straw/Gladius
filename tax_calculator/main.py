@@ -50,7 +50,10 @@ def main(file_paths, parameters):
     df = pd.concat(portfolio_array)
 
     # Get total value of transaction and token prices in USD and sort chronologically by unix time
+
     df = evaluate_in_fiat.get_prices(df, file_paths, parameters)
+    df.to_csv(file_paths['results'] + "\PRICED.csv")
+
     df = df.sort_values(by=["date"])
     df = df.reset_index(drop=True)
 
@@ -70,7 +73,7 @@ def main(file_paths, parameters):
 
     summary = final_output.get_taxes(crypto_dict, parameters['tax_year'])
 
-    print(time.time() - t)
+    print("total time: " + str(time.time() - t) + "s")
 
 
 if __name__ == '__main__':

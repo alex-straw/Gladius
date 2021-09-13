@@ -39,7 +39,6 @@ class TaxObj(object):
 
 def sum_gains(name, df, rules):
     name = TaxObj(name)  # Create an instance of TaxObj for the given crypto asset
-    print(name)
 
     for rule in rules:
         column_name = "net_" + rule
@@ -47,7 +46,6 @@ def sum_gains(name, df, rules):
         attr_loss = rule + "_cap_losses"
         attr_gain = rule + "_cap_gains"
 
-        print(column_name)
         cap_losses = df[column_name][df[column_name] < 0].sum()
         cap_gains = df[column_name][df[column_name] > 0].sum()
 
