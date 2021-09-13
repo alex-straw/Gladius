@@ -7,8 +7,6 @@ import re
 from datetime import datetime
 import time
 import load_files
-import uniform_coinbase_pro
-import uniform_coinbase
 import evaluate_in_fiat
 import crypto_USD_portfolios
 import same_day_rule
