@@ -11,15 +11,22 @@ def get_data(specific_excel_file):
     return df
 
 
-def get_external_prices(df, data_path):
-    """ Retrieves prices for a given unix time """
+def get_external_prices_efficient(df, data_path):
+    """ Method for pricing BTC / ETH with respect to trade time """
+
     token_prices = []
+
     price_data = pd.read_csv(data_path, skiprows=1)
 
+    unix_times = df['unix'].to_numpy()
+
+    relevant_price_data = price_data.query('unix in @unix_times')
+
     for time in df['unix']:
-        row = price_data[price_data['unix'] == time]
+        row = relevant_price_data[relevant_price_data['unix'] == time]
         price = row.iloc[0]['open']
         token_prices.append(price)
+
     df['c2 unit price USD'] = token_prices
 
 
@@ -43,9 +50,7 @@ def dict_dataframes(df, type):
 
 
 def get_prices(df, file_paths, parameters):
-    # t = time.time()
     c2_list, c2_portfolios = dict_dataframes(df, "c2 name")
-    # print(time.time() - t)
 
     exchange_rates = {'USDC': 1,
                       'GBP': 1.38,
@@ -56,7 +61,7 @@ def get_prices(df, file_paths, parameters):
 
     for c2 in c2_portfolios:
         if c2 == 'BTC' or c2 == 'ETH':
-            get_external_prices(c2_portfolios[c2], file_paths[c2])
+            get_external_prices_efficient(c2_portfolios[c2], file_paths[c2])
         else:
             specific_rate = exchange_rates[c2]
             token_prices = [specific_rate] * len(c2_portfolios[c2])
