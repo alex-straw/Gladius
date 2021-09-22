@@ -6,14 +6,14 @@ import os
 import re
 from datetime import datetime
 import time
-import load_files
+
+import user_input_validation
 import evaluate_in_fiat
 import crypto_USD_portfolios
 import same_day_rule
 import thirty_day_s104_rules
 import final_output
 import uniform_exchange_data
-import user_input_validation
 
 file_paths = {'testing_cb_pro': r"C:\Users\alexa\Desktop\user_spreadsheets\scarlett_cb_pro.csv",
               'GOV_example_6': r"C:\Users\alexa\Desktop\user_spreadsheets\EXAMPLE_6_GOV.csv",
@@ -33,7 +33,7 @@ def main(file_paths, parameters):
 
     input_dict = {"coinbase_pro": file_paths['coinbase_pro'], "coinbase": file_paths['coinbase']}  # Default input
 
-    user_df_dict = user_input_validation.validate(input_dict)  # Validate if user input is correct
+    user_df_dict = user_input_validation.validate(input_dict)  # Load files and validate if user input is correct
 
     portfolio_array = []
 
