@@ -50,6 +50,10 @@ def dict_dataframes(df, type):
 
 
 def get_prices(df, file_paths):
+    """ get_prices assigns transaction specific exchange rates for every c2 traded by a user (BTC,ETH,GBP,EUR,USD...).
+        This is done so that capital gains/losses can be found in a singular standard FIAT currency.
+        Initially, prices are found in USD, then converted into GBP.
+    """
     c2_list, c2_portfolios = dict_dataframes(df, "c2 name")
 
     exchange_rates = {'USDC': 1,
@@ -61,17 +65,22 @@ def get_prices(df, file_paths):
 
     for c2 in c2_portfolios:
         if c2 == 'BTC' or c2 == 'ETH':
+            #  Minute specific BTC and ETH prices are assigned to each transaction
             get_external_prices_efficient(c2_portfolios[c2], file_paths[c2])
         else:
+            #  A constant conversion factor is used for fiat currencies (to be updated)
             specific_rate = exchange_rates[c2]
+            #  Where a conversion is constant, its value can be duplicated for the specific c2 data frame
             token_prices = [specific_rate] * len(c2_portfolios[c2])
             c2_portfolios[c2]['c2 unit price USD'] = token_prices
 
+    #  Data frames are rejoined once priced
     df = pd.concat(c2_portfolios)
 
     # Convert from USD to GBP
     df['c2 unit price'] = df['c2 unit price USD'] / exchange_rates['GBP']
 
+    # Size or 'allowable costs' is the total transaction magnitude (price x quantity)
     df['c2 size fiat'] = df['c2 unit price'] * df['c2 size']
     df['c1 size fiat'] = df['c2 size fiat'] * - 1
     df['c1 unit price'] = abs(df['c2 size fiat'] / df['c1 size'])
