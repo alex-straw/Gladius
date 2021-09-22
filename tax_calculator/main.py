@@ -9,7 +9,7 @@ import time
 
 import user_input_validation
 import get_standard_currency
-import crypto_USD_portfolios
+import make_crypto_specific_portfolios
 import same_day_rule
 import thirty_day_s104_rules
 import final_output
@@ -61,7 +61,7 @@ def main(file_paths, parameters):
     # Separate into many data frames - one for each unique currency traded
     # Currencies are converted into USD first as this is the market with the highest volume
     # Higher volume generally improves price accuracy, and reduces spread
-    cryptos_traded, crypto_dict = crypto_USD_portfolios.make_portfolios(df, file_paths)
+    cryptos_traded, crypto_dict = make_crypto_specific_portfolios.make_portfolios(df, file_paths)
 
     # Handle all same day transactions and settle each day in terms of the net trade type: acquisition or disposal
     crypto_dict = same_day_rule.group_transactions(crypto_dict)
