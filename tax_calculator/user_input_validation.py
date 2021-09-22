@@ -78,7 +78,7 @@ def check_column_names(user_df, correct_df, exchange):
         sys.exit(1)
 
 
-def file_can_be_read(path, skiprows, exchange):
+def read_file(path, skiprows, exchange):
     """ checks that the file can be loaded and is of the correct format: csv """
     try:
         df = pd.read_csv(path, skiprows=skiprows)
@@ -97,13 +97,13 @@ def validate(user_input):
     correct_dfs_dict = get_correct_dfs_dict()
 
     if "coinbase" in user_input:
-        cb_df = file_can_be_read(user_input["coinbase"], 7, "coinbase")
+        cb_df = read_file(user_input["coinbase"], 7, "coinbase")
         cb_df = check_column_names(cb_df, correct_dfs_dict['coinbase'], "coinbase")
 
         user_dfs_dict["coinbase"] = cb_df
 
     if "coinbase_pro" in user_input:
-        cb_pro_df = file_can_be_read(user_input['coinbase_pro'], 0, "coinbase_pro")
+        cb_pro_df = read_file(user_input['coinbase_pro'], 0, "coinbase_pro")
         cb_pro_df = check_column_names(cb_pro_df, correct_dfs_dict['coinbase_pro'], "coinbase pro")
 
         user_dfs_dict["coinbase_pro"] = cb_pro_df
