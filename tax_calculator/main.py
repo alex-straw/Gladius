@@ -62,6 +62,7 @@ def main(file_paths, parameters):
     # Currencies are converted into USD first as this is the market with the highest volume
     # Higher volume generally improves price accuracy, and reduces spread
     cryptos_traded, crypto_dict = make_crypto_specific_portfolios.make_portfolios(df, file_paths)
+    crypto_dict['ALGO'].to_csv(file_paths['results'] + "\ALGO_traded.csv")
 
     # Handle all same day transactions and settle each day in terms of the net trade type: acquisition or disposal
     crypto_dict = same_day_rule.group_transactions(crypto_dict)

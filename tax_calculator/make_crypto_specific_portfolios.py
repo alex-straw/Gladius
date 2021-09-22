@@ -3,7 +3,15 @@ import numpy as np
 
 
 def get_crypto_dataframes(df):
-    """ make a portfolio for each unique cryptocurrency traded in c1 column """
+    """
+    --- get_crypto_dataframes() ---
+    This function takes the complete data frame with GBP priced transactions.
+    It creates a dictionary of data frames containing every transaction that involved that crypto-asset.
+    For instance, Bitcoin is often bought with GBP, but also used to purchase other crypto currencies.
+    Whatever the transaction, if Bitcoin is involved, that entire transaction is placed into this new
+    crypto-specific portfolio.
+    """
+
     c1s_traded = df['c1 name'].unique()
     crypto_portfolios = {}
 
@@ -25,10 +33,12 @@ def get_crypto_dataframes(df):
 
 def tidy_portfolio(df, crypto, file_paths):
     """
-    This function builds a new data frame that only contains:
-        -itself
-
-    This is done to prep for tax calculations later - as they are resolved in FIAT
+    --- tidy_portfolio() ---
+    The vast complexity with crypto taxes is a result of crypto-crypto trading.  To simplify this, trades are simplified
+    as shown below from a -> b(i),b(ii), splitting crypto-crypto trades into 2 separate trades resolved in fiat.
+        a)      10 Eth --> 0.5 Bitcoin
+        b) i)   10 Eth --> £10,000
+        b) ii)  £10,000 --> 0.5 BTC
     """
 
     columns_lhs = ['date', 'unix', 'c1 name', 'c1 size', 'c1 unit price']
@@ -67,6 +77,10 @@ def tidy_portfolio(df, crypto, file_paths):
 
 
 def make_portfolios(df, file_paths):
+    """ takes complete GBP-priced, and chronologically sorted data frame output by 'get_standard_currency.py'
+        returns a dictionary of data frames.  Each data frame contains only one crypto asset priced in GBP
+    """
+
     c1s_traded, crypto_portfolios = get_crypto_dataframes(df)
 
     for name in crypto_portfolios:
