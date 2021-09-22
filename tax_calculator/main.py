@@ -8,7 +8,7 @@ from datetime import datetime
 import time
 
 import user_input_validation
-import evaluate_in_fiat
+import get_standard_currency
 import crypto_USD_portfolios
 import same_day_rule
 import thirty_day_s104_rules
@@ -52,14 +52,15 @@ def main(file_paths, parameters):
 
     # Assign minute precise BTC/ETH/USD/EUR/USDC -TO-> GBP exchange rates for each transaction.
     # This is required to get consistent gain/loss information during bulk calculations.
-    df = evaluate_in_fiat.get_prices(df, file_paths)
+    df = get_standard_currency.get_prices(df, file_paths)
 
+    # Once priced all transactions are sorted chronologically
     df = df.sort_values(by=["date"])
     df = df.reset_index(drop=True)
 
     # Separate into many data frames - one for each unique currency traded
     # Currencies are converted into USD first as this is the market with the highest volume
-    # Higher volume typically improves price accuracy, and reduces spread
+    # Higher volume generally improves price accuracy, and reduces spread
     cryptos_traded, crypto_dict = crypto_USD_portfolios.make_portfolios(df, file_paths)
 
     # Handle all same day transactions and settle each day in terms of the net trade type: acquisition or disposal
