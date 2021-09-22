@@ -52,7 +52,7 @@ def main(file_paths, parameters):
 
     # Get total value of transaction and token prices in USD and sort chronologically by unix time
 
-    df = evaluate_in_fiat.get_prices(df, file_paths, parameters)
+    df = evaluate_in_fiat.get_prices(df, file_paths)
     df.to_csv(file_paths['results'] + "\PRICED.csv")
 
     df = df.sort_values(by=["date"])

@@ -49,7 +49,7 @@ def dict_dataframes(df, type):
     return c_list, c_portfolios
 
 
-def get_prices(df, file_paths, parameters):
+def get_prices(df, file_paths):
     c2_list, c2_portfolios = dict_dataframes(df, "c2 name")
 
     exchange_rates = {'USDC': 1,
