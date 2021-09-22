@@ -10,10 +10,11 @@ import time
 import user_input_validation
 import get_standard_currency
 import make_crypto_specific_portfolios
-import same_day_rule
-import thirty_day_s104_rules
+import apply_same_day_rule
+import apply_thirty_day_s104_rules
 import final_output
 import uniform_exchange_data
+import apply_UK_tax_rules
 
 file_paths = {'testing_cb_pro': r"C:\Users\alexa\Desktop\user_spreadsheets\scarlett_cb_pro.csv",
               'GOV_example_6': r"C:\Users\alexa\Desktop\user_spreadsheets\EXAMPLE_6_GOV.csv",
@@ -62,13 +63,9 @@ def main(file_paths, parameters):
     # Currencies are converted into USD first as this is the market with the highest volume
     # Higher volume generally improves price accuracy, and reduces spread
     cryptos_traded, crypto_dict = make_crypto_specific_portfolios.make_portfolios(df, file_paths)
-    crypto_dict['ALGO'].to_csv(file_paths['results'] + "\ALGO_traded.csv")
+    #crypto_dict['ALGO'].to_csv(file_paths['results'] + "\ALGO_traded.csv")
 
-    # Handle all same day transactions and settle each day in terms of the net trade type: acquisition or disposal
-    crypto_dict = same_day_rule.group_transactions(crypto_dict)
-
-    # Handle 30 day rule and S104 rules
-    crypto_dict = thirty_day_s104_rules.final_pass(crypto_dict)
+    crypto_dict = apply_UK_tax_rules.master_func(crypto_dict)
 
     summary = final_output.get_taxes(crypto_dict, parameters['tax_year'])
 
