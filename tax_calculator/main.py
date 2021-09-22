@@ -50,10 +50,9 @@ def main(file_paths, parameters):
     # Merge portfolios
     df = pd.concat(portfolio_array)
 
-    # Get total value of transaction and token prices in USD and sort chronologically by unix time
-
+    # Assign minute precise BTC/ETH/USD/EUR/USDC -TO-> GBP exchange rates for each transaction.
+    # This is required to get consistent gain/loss information during bulk calculations.
     df = evaluate_in_fiat.get_prices(df, file_paths)
-    df.to_csv(file_paths['results'] + "\PRICED.csv")
 
     df = df.sort_values(by=["date"])
     df = df.reset_index(drop=True)
