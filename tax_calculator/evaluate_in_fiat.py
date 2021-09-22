@@ -70,7 +70,7 @@ def get_prices(df, file_paths, parameters):
     df = pd.concat(c2_portfolios)
 
     # Convert from USD to GBP
-    df['c2 unit price'] = df['c2 unit price USD'] / exchange_rates[parameters['home_currency']]
+    df['c2 unit price'] = df['c2 unit price USD'] / exchange_rates['GBP']
 
     df['c2 size fiat'] = df['c2 unit price'] * df['c2 size']
     df['c1 size fiat'] = df['c2 size fiat'] * - 1
