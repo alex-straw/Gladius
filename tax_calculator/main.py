@@ -31,24 +31,24 @@ parameters = {'home_currency': 'GBP',
 def main(file_paths, parameters):
     t = time.time()
 
-    test_input = user_input_validation.test()
+    input_dict = {"coinbase_pro": file_paths['coinbase_pro'], "coinbase": file_paths['coinbase']}  # Default input
 
-    print(test_input)
+    user_df_dict = user_input_validation.validate(input_dict)  # Validate if user input is correct
 
+    portfolio_array = []
 
-    # Load trading data from excel spreadsheets
-    #coinbase_df = load_files.coinbase(file_paths['coinbase'])
+    # Standardise coinbase data if the user has provided it
+    if "coinbase" in user_df_dict:
+        user_df_dict["coinbase"] = uniform_exchange_data.coinbase_main(user_df_dict["coinbase"])
+        portfolio_array.append(user_df_dict["coinbase"])
 
-    #coinbase_pro_df = load_files.coinbase_pro(file_paths['coinbase_pro'])
-
-    # Standardise portfolios prior to data merge
-    #coinbase_df = uniform_exchange_data.coinbase_main(coinbase_df)
-    #coinbase_pro_df = uniform_exchange_data.coinbase_pro_main(coinbase_pro_df)
-
-    #portfolio_array = [coinbase_pro_df, coinbase_df]
+    # Standardise coinbase pro data if the user has provided it
+    if "coinbase_pro" in user_df_dict:
+        user_df_dict["coinbase_pro"] = uniform_exchange_data.coinbase_pro_main(user_df_dict["coinbase_pro"])
+        portfolio_array.append(user_df_dict["coinbase_pro"])
 
     # Merge portfolios
-    #df = pd.concat(portfolio_array)
+    df = pd.concat(portfolio_array)
 
     # Get total value of transaction and token prices in USD and sort chronologically by unix time
 
@@ -63,14 +63,11 @@ def main(file_paths, parameters):
     # Higher volume typically improves price accuracy, and reduces spread
     cryptos_traded, crypto_dict = crypto_USD_portfolios.make_portfolios(df, file_paths)
 
-    crypto_dict['BTC'].to_csv(file_paths['results'] + "\BTC_PRE.csv")
-
     # Handle all same day transactions and settle each day in terms of the net trade type: acquisition or disposal
     crypto_dict = same_day_rule.group_transactions(crypto_dict)
 
     # Handle 30 day rule and S104 rules
     crypto_dict = thirty_day_s104_rules.final_pass(crypto_dict)
-    crypto_dict['BTC'].to_csv(file_paths['results'] + "\BTC.csv")
 
     summary = final_output.get_taxes(crypto_dict, parameters['tax_year'])
 
