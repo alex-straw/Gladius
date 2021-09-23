@@ -28,6 +28,23 @@ parameters = {'home_currency': 'GBP',
               'tax_allowance': 12300}
 
 
+def output_demo(summary, parameters):
+    print("total capital losses in " + parameters['tax_year'] + ": £" + str(summary["losses"]))
+    print("total capital gains in " + parameters['tax_year'] + ": £" + str(summary["gains"]))
+
+    net = summary["losses"] + summary["gains"]
+    print("net: £" + str(net))
+
+    if net < 0:
+        print("losses of £" + str(net) + " can be applied to your gains in the next 4 years to reduce tax owed")
+    else:
+        if parameters["tax_allowance"] - net > 0:
+            print("£0 in tax owed, remaining tax free allowance for year = " + str(parameters["tax_allowance"] - net))
+        else:
+            taxable_amount = net - parameters["tax_allowance"]
+            print("tax free allowance used, carry over previous losses, or you must pay tax on " + taxable_amount)
+
+
 def main(file_paths, parameters):
     t = time.time()
 
@@ -69,21 +86,7 @@ def main(file_paths, parameters):
     # Input crypto dict, output a dictionary with ["gains"] and ["losses"]
     summary = final_output.get_taxes(crypto_dict, parameters['tax_year'])
 
-    print("total capital losses in " + parameters['tax_year'] + ": £" + str(summary["losses"]))
-    print("total capital gains in " + parameters['tax_year'] + ": £" + str(summary["gains"]))
-
-    net = summary["losses"] + summary["gains"]
-    print("net: £" + str(net))
-
-    if net < 0:
-        print("losses of £" + str(net) + " can be applied to your gains in the next 4 years to reduce tax owed")
-    else:
-        if parameters["tax_allowance"] - net > 0:
-            print("£0 in tax owed, remaining tax free allowance for year = " + str(parameters["tax_allowance"] - net))
-        else:
-            taxable_amount = net - parameters["tax_allowance"]
-            print("tax free allowance used, carry over previous losses, or you must pay tax on " + taxable_amount)
-
+    output_demo(summary, parameters)
     print("total time: " + str(time.time() - t) + "s")
 
 
