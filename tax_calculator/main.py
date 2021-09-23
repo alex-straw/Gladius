@@ -14,6 +14,19 @@ import final_output
 import uniform_exchange_data
 import apply_UK_tax_rules
 
+""""
+
+list_of_files = [] # Multi file upload from web form
+file_paths = {}
+
+for file_path in list_of_files:
+    if is_coinbase_file(file_path):
+        file_paths['coinbase'] = file_path
+    elif is_coinbase_pro_file(file_path):
+        # add to 'coinbase pro'
+    
+"""
+
 file_paths = {'testing_cb_pro': r"C:\Users\alexa\Desktop\user_spreadsheets\scarlett_cb_pro.csv",
               'GOV_example_6': r"C:\Users\alexa\Desktop\user_spreadsheets\EXAMPLE_6_GOV.csv",
               'coinbase': r"C:\Users\alexa\Desktop\user_spreadsheets\cb.csv",
@@ -23,13 +36,16 @@ file_paths = {'testing_cb_pro': r"C:\Users\alexa\Desktop\user_spreadsheets\scarl
               'results': r"C:\Users\alexa\Desktop\output_testing"
               }
 
+
 parameters = {'home_currency': 'GBP',
-              'tax_year': '2020',
+              'tax_year': '2021',
               'tax_allowance': 12300}
 
 """ 
     TAX CALC TO DO:
         - Check trading fees are being managed correctly
+        - Remove home currency
+        - 
 """
 
 
@@ -54,6 +70,7 @@ def main(file_paths, parameters):
     t = time.time()
 
     input_dict = {"coinbase_pro": file_paths['coinbase_pro'], "coinbase": file_paths['coinbase']}  # Default input
+    #input_dict = {"coinbase_pro": file_paths['GOV_example_6']}  # Default input
 
     user_df_dict = user_input_validation.validate(input_dict)  # Load files and validate if user input is correct
 
@@ -82,7 +99,7 @@ def main(file_paths, parameters):
 
     # Separate complete df into many specific portfolios that contain only a single crypto-asset (all in GBP)
     cryptos_traded, crypto_dict = make_crypto_specific_portfolios.make_portfolios(df, file_paths)
-    crypto_dict['ALGO'].to_csv(file_paths['results'] + "\ALGO_traded.csv")
+    #crypto_dict['ALGO'].to_csv(file_paths['results'] + "\ALGO_traded.csv")
 
     crypto_dict = apply_UK_tax_rules.master_func(crypto_dict)
 
