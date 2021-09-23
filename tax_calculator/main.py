@@ -45,7 +45,8 @@ parameters = {'home_currency': 'GBP',
     TAX CALC TO DO:
         - Check trading fees are being managed correctly
         - Remove home currency
-        - AWS
+        
+        ALEX
             - Write code to pull data from s3 bucket - on event of dan's message / input/config.txt file
             - Code to determine what exchange each csv file corresponds to
             - run the code
