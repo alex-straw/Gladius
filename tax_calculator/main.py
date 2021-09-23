@@ -26,7 +26,7 @@ file_paths = {'testing_cb_pro': r"C:\Users\alexa\Desktop\user_spreadsheets\scarl
               }
 
 parameters = {'home_currency': 'GBP',
-              'tax_year': '2021'}
+              'tax_year': '2020'}
 
 
 def main(file_paths, parameters):
@@ -63,9 +63,9 @@ def main(file_paths, parameters):
     # Currencies are converted into USD first as this is the market with the highest volume
     # Higher volume generally improves price accuracy, and reduces spread
     cryptos_traded, crypto_dict = make_crypto_specific_portfolios.make_portfolios(df, file_paths)
-    #crypto_dict['ALGO'].to_csv(file_paths['results'] + "\ALGO_traded.csv")
 
     crypto_dict = apply_UK_tax_rules.master_func(crypto_dict)
+    crypto_dict['ALGO'].to_csv(file_paths['results'] + "\ALGO_traded.csv")
 
     summary = final_output.get_taxes(crypto_dict, parameters['tax_year'])
 

@@ -331,29 +331,25 @@ def master_func(crypto_dict):
     Calls each rule sequentially according to HMRC rules (22/09/2021)
     """
 
-    def apply_same_day_rule(crypto_dict):
-        for name in crypto_dict:
-            unique_days, df = get_days_traded(crypto_dict[name])
+    def apply_same_day_rule(df):
+        unique_days, df = get_days_traded(df)
+        df = group_same_day(unique_days, df)
+        return df
 
-            crypto_dict[name] = group_same_day(unique_days, crypto_dict[name])
+    def apply_thirty_day_s104_pool(df, name):
+        s104_obj = S104Pool(name)  # Initialise a s104 pool for each crypto currency that is traded
 
-        return crypto_dict
+        # Unmatched tokens will be gradually be matched and reduced.  Quantity token will remain unchanged.
+        df['net_thirty_day'] = [0] * len(df)
+        df['net_s104_pool'] = [0] * len(df)
+        df['residual_pool_value'] = abs(df['residual_pool_value'])
 
-    def apply_thirty_day_s104_pool(crypto_dict):
-        for name in crypto_dict:
-            s104_obj = S104Pool(name)  # Initialise a s104 pool for each crypto currency that is traded
+        df = add_unmatched_acq_col(df)
+        df = match_crypto(df, s104_obj)
+        return df
 
-            # Unmatched tokens will be gradually be matched and reduced.  Quantity token will remain unchanged.
-            crypto_dict[name]['net_thirty_day'] = [0] * len(crypto_dict[name])
-            crypto_dict[name]['net_s104_pool'] = [0] * len(crypto_dict[name])
-            crypto_dict[name]['residual_pool_value'] = abs(crypto_dict[name]['residual_pool_value'])
-
-            crypto_dict[name] = add_unmatched_acq_col(crypto_dict[name])
-
-            crypto_dict[name] = match_crypto(crypto_dict[name], s104_obj)
-        return crypto_dict
-
-    crypto_dict = apply_same_day_rule(crypto_dict)
-    crypto_dict = apply_thirty_day_s104_pool(crypto_dict)
+    for name in crypto_dict:
+        crypto_dict[name] = apply_same_day_rule(crypto_dict[name])
+        crypto_dict[name] = apply_thirty_day_s104_pool(crypto_dict[name],name)
 
     return crypto_dict
