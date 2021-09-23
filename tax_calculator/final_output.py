@@ -85,7 +85,8 @@ def get_taxes(crypto_dict, tax_year):
             total_cap_losses += cap_losses
             total_cap_gains += cap_gains
 
-    print("total capital losses in " + tax_year + ": £" + str(total_cap_losses))
-    print("total capital gains in " + tax_year + ": £" + str(total_cap_gains))
+    summary = {"gains": total_cap_gains,
+               "losses": total_cap_losses}
 
-    return crypto_dict
+    return summary
+

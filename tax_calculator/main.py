@@ -24,7 +24,8 @@ file_paths = {'testing_cb_pro': r"C:\Users\alexa\Desktop\user_spreadsheets\scarl
               }
 
 parameters = {'home_currency': 'GBP',
-              'tax_year': '2020'}
+              'tax_year': '2020',
+              'tax_allowance': 12300}
 
 
 def main(file_paths, parameters):
@@ -65,7 +66,23 @@ def main(file_paths, parameters):
     crypto_dict = apply_UK_tax_rules.master_func(crypto_dict)
     crypto_dict['ALGO'].to_csv(file_paths['results'] + "\ALGO_traded.csv")
 
+    # Input crypto dict, output a dictionary with ["gains"] and ["losses"]
     summary = final_output.get_taxes(crypto_dict, parameters['tax_year'])
+
+    print("total capital losses in " + parameters['tax_year'] + ": £" + str(summary["losses"]))
+    print("total capital gains in " + parameters['tax_year'] + ": £" + str(summary["gains"]))
+
+    net = summary["losses"] + summary["gains"]
+    print("net: £" + str(net))
+
+    if net < 0:
+        print("losses of £" + str(net) + " can be applied to your gains in the next 4 years to reduce tax owed")
+    else:
+        if parameters["tax_allowance"] - net > 0:
+            print("£0 in tax owed, remaining tax free allowance for year = " + str(parameters["tax_allowance"] - net))
+        else:
+            taxable_amount = net - parameters["tax_allowance"]
+            print("tax free allowance used, carry over previous losses, or you must pay tax on " + taxable_amount)
 
     print("total time: " + str(time.time() - t) + "s")
 
