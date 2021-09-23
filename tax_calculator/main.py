@@ -45,7 +45,22 @@ parameters = {'home_currency': 'GBP',
     TAX CALC TO DO:
         - Check trading fees are being managed correctly
         - Remove home currency
-        - 
+        - AWS
+            - Write code to pull data from s3 bucket - on event of dan's message / input/config.txt file
+            - Code to determine what exchange each csv file corresponds to
+            - run the code
+            - on completion --> https://docs.aws.amazon.com/ses/latest/DeveloperGuide/send-using-sdk-python.html
+            - Send email to email address
+            - subsequently delete the user csvs from s3 bucket
+            
+        DAN
+            - AWS Cognito 
+            - Web form
+                - JavaScript validation
+            - AWS Amplify
+            - Save files to S3 bucket
+            - User ID? 
+            - Create project holding the lambda functions
 """
 
 
