@@ -75,9 +75,7 @@ def main(file_paths, parameters):
     df = df.sort_values(by=["date"])
     df = df.reset_index(drop=True)
 
-    # Separate into many data frames - one for each unique currency traded
-    # Currencies are converted into USD first as this is the market with the highest volume
-    # Higher volume generally improves price accuracy, and reduces spread
+    # Separate complete df into many specific portfolios that contain only a single crypto-asset (all in GBP)
     cryptos_traded, crypto_dict = make_crypto_specific_portfolios.make_portfolios(df, file_paths)
 
     crypto_dict = apply_UK_tax_rules.master_func(crypto_dict)
