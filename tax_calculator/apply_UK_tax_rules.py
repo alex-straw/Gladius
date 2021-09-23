@@ -350,6 +350,6 @@ def master_func(crypto_dict):
 
     for name in crypto_dict:
         crypto_dict[name] = apply_same_day_rule(crypto_dict[name])
-        crypto_dict[name] = apply_thirty_day_s104_pool(crypto_dict[name],name)
+        crypto_dict[name] = apply_thirty_day_s104_pool(crypto_dict[name], name)
 
     return crypto_dict
