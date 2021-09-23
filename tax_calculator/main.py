@@ -27,6 +27,11 @@ parameters = {'home_currency': 'GBP',
               'tax_year': '2020',
               'tax_allowance': 12300}
 
+""" 
+    TAX CALC TO DO:
+        - Check trading fees are being managed correctly
+"""
+
 
 def output_demo(summary, parameters):
     print("total capital losses in " + parameters['tax_year'] + ": £" + str(summary["losses"]))
@@ -77,9 +82,9 @@ def main(file_paths, parameters):
 
     # Separate complete df into many specific portfolios that contain only a single crypto-asset (all in GBP)
     cryptos_traded, crypto_dict = make_crypto_specific_portfolios.make_portfolios(df, file_paths)
+    crypto_dict['ALGO'].to_csv(file_paths['results'] + "\ALGO_traded.csv")
 
     crypto_dict = apply_UK_tax_rules.master_func(crypto_dict)
-    crypto_dict['ALGO'].to_csv(file_paths['results'] + "\ALGO_traded.csv")
 
     # Input crypto dict, output a dictionary with ["gains"] and ["losses"]
     summary = final_output.get_taxes(crypto_dict, parameters['tax_year'])
