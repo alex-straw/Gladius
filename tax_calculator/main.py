@@ -10,8 +10,6 @@ import time
 import user_input_validation
 import get_standard_currency
 import make_crypto_specific_portfolios
-import apply_same_day_rule
-import apply_thirty_day_s104_rules
 import final_output
 import uniform_exchange_data
 import apply_UK_tax_rules
