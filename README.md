@@ -1,7 +1,7 @@
 # Gladius
 Tax calculator for Coinbase Pro and Coinbase trading data.  HMRC jurisdiction.
 
-Originally this was developed for a startup named 'Gladius Crypto Tax'
+Originally this was developed for a startup named 'Gladius Crypto Tax'.
 
 As pricing structures for other SAAS firms took on the freemium model, the business model for Gladius has been made redundant, and consequently the start-up cancelled.
 
