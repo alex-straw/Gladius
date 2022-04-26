@@ -14,8 +14,6 @@ Takes as input:
 Outputs (MVP):
   -  Capital gains (£) / losses (£) in the respective tax year
 
-
 To do:
-
   - Deploy on AWS 
   - Build MVP Frontend
